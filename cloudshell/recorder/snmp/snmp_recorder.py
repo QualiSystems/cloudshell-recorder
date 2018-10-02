@@ -21,17 +21,19 @@ class SnmpRecorder(object):
         self.snmp_parameters = snmp_parameters
         self.output_file = list()
         self.data_file_handler = SnmpRecord()
-        self.__oid = None
-        self.__stop_oid = None
+        self._oid = None
+        self._stop_oid = None
         self._cmd_gen = None
 
-    def create_snmp_record(self, oid, get_subtree=True):
-        self.__oid = univ.ObjectIdentifier(oid)
-        if get_subtree:
+    def create_snmp_record(self, oid, stop_oid=None, get_subtree=True):
+        self._oid = univ.ObjectIdentifier(oid)
+        if stop_oid:
+            self._stop_oid = univ.ObjectIdentifier(stop_oid)
+        elif get_subtree:
             _stop_oid = "{}{}".format(oid[:-1], int(oid[-1:]) + 1)
-            self.__stop_oid = univ.ObjectIdentifier(_stop_oid)
+            self._stop_oid = univ.ObjectIdentifier(_stop_oid)
 
-        cbCtx = {
+        cb_ctx = {
             'total': 0,
             'count': 0,
             'errors': 0,
@@ -50,8 +52,8 @@ class SnmpRecorder(object):
                 'tgt',
                 self.snmp_parameters.v3_context_engine_id, self.snmp_parameters.v3_context,
                 0, self.snmp_parameters.get_bulk_repetitions,
-                [(self.__oid, None)],
-                self.cbFun, cbCtx
+                [(self._oid, None)],
+                self.cbFun, cb_ctx
             )
         else:
             self._cmd_gen = cmdgen.NextCommandGenerator()
@@ -60,12 +62,12 @@ class SnmpRecorder(object):
                 self.snmp_parameters.snmp_engine,
                 'tgt',
                 self.snmp_parameters.v3_context_engine_id, self.snmp_parameters.v3_context,
-                [(self.__oid, None)],
-                self.cbFun, cbCtx
+                [(self._oid, None)],
+                self.cbFun, cb_ctx
             )
 
         log.msg('Sending initial %s request for %s ....' % (
-            self.snmp_parameters.get_bulk_flag and 'GETBULK' or 'GETNEXT', self.__oid))
+            self.snmp_parameters.get_bulk_flag and 'GETBULK' or 'GETNEXT', self._oid))
 
         t = time.time()
 
@@ -84,10 +86,10 @@ class SnmpRecorder(object):
 
         t = time.time() - t
 
-        cbCtx['total'] += cbCtx['count']
+        cb_ctx['total'] += cb_ctx['count']
 
         log.msg('OIDs dumped: %s, elapsed: %.2f sec, rate: %.2f OIDs/sec, errors: %d' % (
-            cbCtx['total'], t, t and cbCtx['count'] // t or 0, cbCtx['errors']))
+            cb_ctx['total'], t, t and cb_ctx['count'] // t or 0, cb_ctx['errors']))
 
         if exc_info:
             for line in traceback.format_exception(*exc_info):
@@ -95,81 +97,83 @@ class SnmpRecorder(object):
 
         return self.output_file
 
-    def cbFun(self, snmpEngine, sendRequestHandle, errorIndication,
-              errorStatus, errorIndex, varBindTable, cbCtx):
-        if errorIndication and not cbCtx['retries']:
-            cbCtx['errors'] += 1
-            log.msg('SNMP Engine error: %s' % errorIndication)
+    def cbFun(self, snmp_engine, send_request_handle, error_indication,
+              error_status, error_index, var_bind_table, cb_ctx):
+        if error_indication and not cb_ctx['retries']:
+            cb_ctx['errors'] += 1
+            log.msg('SNMP Engine error: %s' % error_indication)
             return
         # SNMPv1 response may contain noSuchName error *and* SNMPv2c exception,
         # so we ignore noSuchName error here
-        if errorStatus and errorStatus != 2 or errorIndication:
-            log.msg('Remote SNMP error %s' % (errorIndication or errorStatus.prettyPrint()))
-            if cbCtx['retries']:
+        if error_status and error_status != 2 or error_indication:
+            log.msg('Remote SNMP error %s' % (error_indication or error_status.prettyPrint()))
+            if cb_ctx['retries']:
                 try:
-                    nextOID = varBindTable[-1][0][0]
+                    next_oid = var_bind_table[-1][0][0]
                 except IndexError:
-                    nextOID = cbCtx['lastOID']
+                    next_oid = cb_ctx['lastOID']
                 else:
-                    log.msg('Failed OID: %s' % nextOID)
+                    log.msg('Failed OID: %s' % next_oid)
                 # fuzzy logic of walking a broken OID
-                if len(nextOID) < 4:
+                if len(next_oid) < 4:
                     pass
-                elif (self.snmp_parameters.continue_on_errors - cbCtx[
+                elif (self.snmp_parameters.continue_on_errors - cb_ctx[
                     'retries']) * 10 / self.snmp_parameters.continue_on_errors > 5:
-                    nextOID = nextOID[:-2] + (nextOID[-2] + 1,)
-                elif nextOID[-1]:
-                    nextOID = nextOID[:-1] + (nextOID[-1] + 1,)
+                    next_oid = next_oid[:-2] + (next_oid[-2] + 1,)
+                elif next_oid[-1]:
+                    next_oid = next_oid[:-1] + (next_oid[-1] + 1,)
                 else:
-                    nextOID = nextOID[:-2] + (nextOID[-2] + 1, 0)
+                    next_oid = next_oid[:-2] + (next_oid[-2] + 1, 0)
 
-                cbCtx['retries'] -= 1
-                cbCtx['lastOID'] = nextOID
+                cb_ctx['retries'] -= 1
+                cb_ctx['lastOID'] = next_oid
 
-                log.msg('Retrying with OID %s (%s retries left)...' % (nextOID, cbCtx['retries']))
+                log.msg('Retrying with OID %s (%s retries left)...' % (next_oid, cb_ctx['retries']))
 
                 # initiate another SNMP walk iteration
                 if self.snmp_parameters.get_bulk_flag:
                     self._cmd_gen.sendVarBinds(
-                        snmpEngine,
+                        snmp_engine,
                         'tgt',
                         self.snmp_parameters.v3_context_engine_id, self.snmp_parameters.v3_context,
                         0, self.snmp_parameters.get_bulk_repetitions,
-                        [(nextOID, None)],
-                        self.cbFun, cbCtx
+                        [(next_oid, None)],
+                        self.cbFun, cb_ctx
                     )
                 else:
                     self._cmd_gen.sendVarBinds(
-                        snmpEngine,
+                        snmp_engine,
                         'tgt',
                         self.snmp_parameters.v3_context_engine_id, self.snmp_parameters.v3_context,
-                        [(nextOID, None)],
-                        self.cbFun, cbCtx
+                        [(next_oid, None)],
+                        self.cbFun, cb_ctx
                     )
 
-            cbCtx['errors'] += 1
+            cb_ctx['errors'] += 1
 
             return
 
-        if self.snmp_parameters.continue_on_errors != cbCtx['retries']:
-            cbCtx['retries'] += 1
+        if self.snmp_parameters.continue_on_errors != cb_ctx['retries']:
+            cb_ctx['retries'] += 1
 
-        if varBindTable and varBindTable[-1] and varBindTable[-1][0]:
-            cbCtx['lastOID'] = varBindTable[-1][0][0]
+        if var_bind_table and var_bind_table[-1] and var_bind_table[-1][0]:
+            cb_ctx['lastOID'] = var_bind_table[-1][0][0]
 
-        stopFlag = False
+        stop_flag = False
 
         # Walk var-binds
-        for varBindRow in varBindTable:
+        for varBindRow in var_bind_table:
             for oid, value in varBindRow:
                 # EOM
-                if self.__stop_oid and oid >= self.__stop_oid:
-                    stopFlag = True
+                _add_line = True
+                if self._stop_oid and oid >= self._stop_oid:
+                    stop_flag = True
+                    _add_line = False
                 if (value is None or
                         value.tagSet in (rfc1905.NoSuchObject.tagSet,
                                          rfc1905.NoSuchInstance.tagSet,
                                          rfc1905.EndOfMibView.tagSet)):
-                    stopFlag = True
+                    stop_flag = True
 
                 # remove value enumeration
                 if value.tagSet == rfc1902.Integer32.tagSet:
@@ -186,47 +190,49 @@ class SnmpRecorder(object):
                 context = {
                     'origOid': oid,
                     'origValue': value,
-                    'count': cbCtx['count'],
-                    'total': cbCtx['total'],
-                    'iteration': cbCtx['iteration'],
-                    'reqTime': cbCtx['reqTime'],
-                    'startOID': self.__oid,
-                    'stopFlag': stopFlag,
+                    'count': cb_ctx['count'],
+                    'total': cb_ctx['total'],
+                    'iteration': cb_ctx['iteration'],
+                    'reqTime': cb_ctx['reqTime'],
+                    'startOID': self._oid,
+                    'stop_flag': stop_flag,
                 }
 
                 try:
-                    line = self.data_file_handler.format(oid, value, **context).replace("|", ", ")
+                    line = ""
+                    if _add_line:
+                        line = self.data_file_handler.format(oid, value, **context).replace("|", ", ")
                 except error.MoreDataNotification:
-                    cbCtx['count'] = 0
-                    cbCtx['iteration'] += 1
+                    cb_ctx['count'] = 0
+                    cb_ctx['iteration'] += 1
 
-                    moreDataNotification = sys.exc_info()[1]
-                    if 'period' in moreDataNotification:
+                    more_data_notification = sys.exc_info()[1]
+                    if 'period' in more_data_notification:
                         log.msg(
                             '%s OIDs dumped, waiting %.2f sec(s)...' % (
-                                cbCtx['total'], moreDataNotification['period']))
-                        time.sleep(moreDataNotification['period'])
+                                cb_ctx['total'], more_data_notification['period']))
+                        time.sleep(more_data_notification['period'])
 
                     # initiate another SNMP walk iteration
                     if self.snmp_parameters.get_bulk_flag:
                         self._cmd_gen.sendVarBinds(
-                            snmpEngine,
+                            snmp_engine,
                             'tgt',
                             self.snmp_parameters.v3_context_engine_id, self.snmp_parameters.v3_context,
                             0, self.snmp_parameters.get_bulk_repetitions,
-                            [(self.__oid, None)],
-                            self.cbFun, cbCtx
+                            [(self._oid, None)],
+                            self.cbFun, cb_ctx
                         )
                     else:
                         self._cmd_gen.sendVarBinds(
-                            snmpEngine,
+                            snmp_engine,
                             'tgt',
                             self.snmp_parameters.v3_context_engine_id, self.snmp_parameters.v3_context,
-                            [(self.__oid, None)],
-                            self.cbFun, cbCtx
+                            [(self._oid, None)],
+                            self.cbFun, cb_ctx
                         )
 
-                    stopFlag = True  # stop current iteration
+                    stop_flag = True  # stop current iteration
 
                 except error.NoDataNotification:
                     pass
@@ -234,16 +240,17 @@ class SnmpRecorder(object):
                     log.msg('ERROR: %s' % (sys.exc_info()[1],))
                     continue
                 else:
-                    self.output_file.append(line)
+                    if _add_line and line:
+                        self.output_file.append(line)
 
-                    cbCtx['count'] += 1
-                    cbCtx['total'] += 1
+                    cb_ctx['count'] += 1
+                    cb_ctx['total'] += 1
 
-                    if cbCtx['count'] % 100 == 0:
+                    if cb_ctx['count'] % 100 == 0:
                         log.msg('OIDs dumped: %s/%s' % (
-                            cbCtx['iteration'], cbCtx['count']))
+                            cb_ctx['iteration'], cb_ctx['count']))
 
         # Next request time
-        cbCtx['reqTime'] = time.time()
+        cb_ctx['reqTime'] = time.time()
         # Continue walking
-        return not stopFlag
+        return not stop_flag
