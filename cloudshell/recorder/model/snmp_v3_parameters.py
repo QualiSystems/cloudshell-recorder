@@ -8,6 +8,7 @@ class SnmpV3Parameters(BaseSnmpParameters):
     def __init__(self, ip, v3_user, v3_auth_key=None, v3_priv_key=None, v3_auth_proto="NONE",
                  v3_priv_proto="NONE", port=161, is_ipv6=False, timeout=2000, retry_count=2, get_bulk_flag=False,
                  continue_on_errors=0, get_bulk_repetitions=25, v3_context_engine_id=None, v3_context=''):
+
         auth_protocol = AUTH_PROTOCOLS.get(v3_auth_proto.replace("-", ""), None)
         priv_protocol = PRIV_PROTOCOLS.get(v3_priv_proto.replace("-", ""), None)
         if v3_user is None:
@@ -18,20 +19,6 @@ class SnmpV3Parameters(BaseSnmpParameters):
             sys.stderr.write(
                 "ERROR: --snmp-password is missing\r\n")
             sys.exit(-1)
-        # if auth_protocol == config.usmNoAuthProtocol:
-        #     if v3_auth_key is not None:
-        #         auth_protocol = AUTH_PROTOCOLS.get("MD5")
-        # else:
-        #     if v3_auth_key is None:
-        #         sys.stderr.write('ERROR: --snmp-password is missing\r\n')
-        #         sys.exit(-1)
-        # if priv_protocol == config.usmNoPrivProtocol:
-        #     if v3_priv_key is not None:
-        #         priv_protocol = PRIV_PROTOCOLS.get("DES")
-        # else:
-        #     if v3_priv_key is None:
-        #         sys.stderr.write('ERROR: --snmp-private-key is missing\r\n')
-        #         sys.exit(-1)
 
         if v3_priv_key is None and v3_auth_key is None:
             self._sec_level = 'noAuthNoPriv'
@@ -49,7 +36,6 @@ class SnmpV3Parameters(BaseSnmpParameters):
             auth_protocol, v3_auth_key,
             priv_protocol, v3_priv_key
         )
-
 
     @property
     def get_security(self):

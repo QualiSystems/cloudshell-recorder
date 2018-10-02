@@ -38,8 +38,8 @@ def version():
 @click.option(u'--snmp-user')
 @click.option(u'--snmp-password')
 @click.option(u'--snmp-private-key')
-@click.option(u'--snmp-auth-protocol')
-@click.option(u'--snmp-priv-protocol')
+@click.option(u'--snmp-auth-protocol', default="NONE")
+@click.option(u'--snmp-priv-protocol', default="NONE")
 @click.option(u'--snmp-auto-detect-vendor', default="true")
 @click.option(u'--snmp-record', default="shells_based",
               help="Specify an oid template file for record adding 'template:'PATH_TO_FILE''. "
