@@ -20,7 +20,6 @@ class SNMPOrchestrator(object):
     def create_recording(self):
         recorded_data = []
         with SnmpService(self.snmp_parameters) as snmp_recorder:
-            # snmp_recorder = SnmpRecorder(self.snmp_parameters)
 
             recorded_data.extend(snmp_recorder.create_snmp_record(oid=self.DEFAULT_SYSTEM_OID))
 
@@ -52,6 +51,4 @@ class SNMPOrchestrator(object):
                     recorded_data.extend(snmp_recorder.create_snmp_record(oid=oid_line))
                     pbar.next()
 
-                # recorded_data.sort()
-                # self.snmp_parameters.close_snmp_engine_dispatcher()
                 return recorded_data
