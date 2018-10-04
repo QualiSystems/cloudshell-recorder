@@ -34,22 +34,25 @@ def version():
 
 @cli.command()
 @click.argument(u'ip')
-@click.option(u'--snmp-community')
-@click.option(u'--snmp-user')
-@click.option(u'--snmp-password')
-@click.option(u'--snmp-private-key')
-@click.option(u'--snmp-auth-protocol', default="NONE")
-@click.option(u'--snmp-priv-protocol', default="NONE")
-@click.option(u'--snmp-auto-detect-vendor', default="true")
+@click.option(u'--snmp-community', help="Snmp v1 or v2 community")
+@click.option(u'--snmp-user', help="Snmp v3 user")
+@click.option(u'--snmp-password', help="Snmp password or auth")
+@click.option(u'--snmp-private-key', help="Snmp privacy key")
+@click.option(u'--snmp-auth-protocol', default="NONE",
+              help="Snmp auth encryption type: SHA, MD5, SHA224, SHA256, SHA384, SHA512")
+@click.option(u'--snmp-priv-protocol', default="NONE",
+              help="Snmp privacy encryption type: DES, 3DES, AES, AES128, AES192, AES192BLMT, AES256, AES256BLMT, NONE")
+@click.option(u'--snmp-auto-detect-vendor', default="true", help="Enables auto detect of device manufacturer")
 @click.option(u'--snmp-record', default="shells_based",
               help="Specify an oid template file for record adding 'template:'PATH_TO_FILE''. "
                    "Or set it to 'all' to record entire device. "
                    "Default value is 'shells_based', and will record all oids used by the Shells.")
-@click.option(u'--destination-path', default="%APPDATA%\\Quali\\Recordings")
-@click.option(u'--snmp-timeout', default=2000)
-@click.option(u'--snmp-retries', default=2)
-@click.option(u'--snmp-bulk', default="false")
-@click.option(u'--snmp-bulk-repetitions', default=25)
+@click.option(u'--destination-path', default="%APPDATA%\\Quali\\Recordings",
+              help="Destination path, i.e. %APPDATA%\\Quali\\Recordings")
+@click.option(u'--snmp-timeout', default=2000, help="Snmp timeout")
+@click.option(u'--snmp-retries', default=2, help="Amount of snmp retires")
+@click.option(u'--snmp-bulk', default="false", help="Set to 'true' to use snmpbulk for better performance")
+@click.option(u'--snmp-bulk-repetitions', default=25, help="Amount of snmpbulk repetitions")
 def new(ip,
         destination_path,
         cli_user=None,

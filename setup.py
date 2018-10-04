@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-with open(os.path.join('version.txt')) as version_file:
+with open(os.path.join('pypi_version.txt')) as version_file:
     version_from_file = version_file.read().strip()
 
 with open('requirements.txt') as f_required:

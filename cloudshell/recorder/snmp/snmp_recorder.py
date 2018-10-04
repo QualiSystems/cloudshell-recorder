@@ -53,7 +53,7 @@ class SnmpRecorder(object):
                 self.snmp_parameters.v3_context_engine_id, self.snmp_parameters.v3_context,
                 0, self.snmp_parameters.get_bulk_repetitions,
                 [(self._oid, None)],
-                self.cbFun, cb_ctx
+                self.cb_fun, cb_ctx
             )
         else:
             self._cmd_gen = cmdgen.NextCommandGenerator()
@@ -63,7 +63,7 @@ class SnmpRecorder(object):
                 'tgt',
                 self.snmp_parameters.v3_context_engine_id, self.snmp_parameters.v3_context,
                 [(self._oid, None)],
-                self.cbFun, cb_ctx
+                self.cb_fun, cb_ctx
             )
 
         log.msg('Sending initial %s request for %s ....' % (
@@ -82,8 +82,6 @@ class SnmpRecorder(object):
         except Exception:
             exc_info = sys.exc_info()
 
-        # self.snmp_parameters.snmp_engine.transportDispatcher.closeDispatcher()
-
         t = time.time() - t
 
         cb_ctx['total'] += cb_ctx['count']
@@ -97,7 +95,7 @@ class SnmpRecorder(object):
 
         return self.output_file
 
-    def cbFun(self, snmp_engine, send_request_handle, error_indication,
+    def cb_fun(self, snmp_engine, send_request_handle, error_indication,
               error_status, error_index, var_bind_table, cb_ctx):
         if error_indication and not cb_ctx['retries']:
             cb_ctx['errors'] += 1
@@ -138,7 +136,7 @@ class SnmpRecorder(object):
                         self.snmp_parameters.v3_context_engine_id, self.snmp_parameters.v3_context,
                         0, self.snmp_parameters.get_bulk_repetitions,
                         [(next_oid, None)],
-                        self.cbFun, cb_ctx
+                        self.cb_fun, cb_ctx
                     )
                 else:
                     self._cmd_gen.sendVarBinds(
@@ -146,7 +144,7 @@ class SnmpRecorder(object):
                         'tgt',
                         self.snmp_parameters.v3_context_engine_id, self.snmp_parameters.v3_context,
                         [(next_oid, None)],
-                        self.cbFun, cb_ctx
+                        self.cb_fun, cb_ctx
                     )
 
             cb_ctx['errors'] += 1
@@ -221,7 +219,7 @@ class SnmpRecorder(object):
                             self.snmp_parameters.v3_context_engine_id, self.snmp_parameters.v3_context,
                             0, self.snmp_parameters.get_bulk_repetitions,
                             [(self._oid, None)],
-                            self.cbFun, cb_ctx
+                            self.cb_fun, cb_ctx
                         )
                     else:
                         self._cmd_gen.sendVarBinds(
@@ -229,7 +227,7 @@ class SnmpRecorder(object):
                             'tgt',
                             self.snmp_parameters.v3_context_engine_id, self.snmp_parameters.v3_context,
                             [(self._oid, None)],
-                            self.cbFun, cb_ctx
+                            self.cb_fun, cb_ctx
                         )
 
                     stop_flag = True  # stop current iteration

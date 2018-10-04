@@ -8,7 +8,7 @@ class SnmpV2Parameters(BaseSnmpParameters):
         self._user = 'agt'
         self._sec_level = 'noAuthNoPriv'
         self._snmp_version = 0
-        if "2" in self._snmp_version:
+        if "2" in snmp_version:
             self._snmp_version = 1
         super(SnmpV2Parameters, self).__init__(ip, port, is_ipv6, timeout, retry_count, get_bulk_flag,
                                                continue_on_errors, get_bulk_repetitions, v3_context_engine_id,
