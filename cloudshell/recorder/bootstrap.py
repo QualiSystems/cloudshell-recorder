@@ -1,21 +1,7 @@
 import click
 import pkg_resources
 
-# from shellfoundry.decorators import shellfoundry_version_check
-# from shellfoundry.commands.dist_command import DistCommandExecutor
-# from shellfoundry.commands.generate_command import GenerateCommandExecutor
-# from shellfoundry.commands.install_command import InstallCommandExecutor
-# from shellfoundry.commands.list_command import ListCommandExecutor
-# from shellfoundry.commands.new_command import NewCommandExecutor
-# from shellfoundry.commands.extend_command import ExtendCommandExecutor
-# from shellfoundry.commands.pack_command import PackCommandExecutor
-# from shellfoundry.commands.config_command import ConfigCommandExecutor
-# from shellfoundry.commands.show_command import ShowCommandExecutor
-# from shellfoundry.utilities import GEN_ONE, GEN_TWO, LAYER_ONE, NO_FILTER
 from cloudshell.recorder.recorder_orchestrator import RecorderOrchestrator
-
-
-# from cloudshell.recorder.tools.bootstrap_tools import CLI, SNMP, NO_FILTER
 
 
 @click.group()
@@ -26,10 +12,11 @@ def cli():
 @cli.command()
 def version():
     """
-    Displays the cloudshell-device-recorder version
+    Displays the cloudshell-recorder version
     """
+
     click.echo(
-        u'cloudshell-device-recorder version ' + pkg_resources.get_distribution(u'cloudshell-device-recorder').version)
+        u'cloudshell-recorder version ' + pkg_resources.get_distribution('cloudshell-recorder').version)
 
 
 @cli.command()
