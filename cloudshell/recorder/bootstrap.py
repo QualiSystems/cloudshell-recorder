@@ -32,7 +32,7 @@ def version():
                    "NONE. Default is NONE.")
 @click.option(u'--snmp-auto-detect-vendor', is_flag=True, help="Enables auto detect of device manufacturer")
 @click.option(u'--snmp-record', default="shells_based",
-              help="Specify an oid template file for record adding 'template:'PATH_TO_FILE''. "
+              help="Specify an oid template file for record adding 'template:PATH_TO_FILE'. "
                    "Or set it to 'all' to record entire device. "
                    "Default value is 'shells_based', and will record all oids used by the Shells.")
 @click.option(u'--destination-path', default="%APPDATA%\\Quali\\Recordings",
