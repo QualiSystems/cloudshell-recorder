@@ -60,23 +60,21 @@ class RecorderOrchestrator(object):
                             snmp_auth_protocol="NONE",
                             snmp_priv_protocol="NONE",
                             snmp_record=None,
-                            snmp_auto_detect_vendor="true",
+                            snmp_auto_detect_vendor=False,
                             is_ipv6=False,
                             snmp_timeout=2000,
                             snmp_retries=2,
-                            snmp_bulk="None",
+                            snmp_bulk=False,
                             snmp_bulk_repetitions=25,
                             continue_on_errors=0,
                             v3_context_engine_id=None,
                             v3_context=''):
-        snmp_bulk_flag = snmp_bulk.lower() == "true"
-        auto_detect_vendor = snmp_auto_detect_vendor.lower() == "true"
         if snmp_user:
             snmp_parameters = SnmpV3Parameters(self._ip, v3_user=snmp_user, v3_auth_key=snmp_password,
                                                v3_priv_key=snmp_private_key, v3_auth_proto=snmp_auth_protocol,
                                                v3_priv_proto=snmp_priv_protocol, port=snmp_port,
                                                is_ipv6=is_ipv6, timeout=snmp_timeout,
-                                               retry_count=snmp_retries, get_bulk_flag=snmp_bulk_flag,
+                                               retry_count=snmp_retries, get_bulk_flag=snmp_bulk,
                                                continue_on_errors=continue_on_errors,
                                                get_bulk_repetitions=snmp_bulk_repetitions,
                                                v3_context_engine_id=v3_context_engine_id,
@@ -84,21 +82,21 @@ class RecorderOrchestrator(object):
         else:
             snmp_parameters = SnmpV2Parameters(self._ip, snmp_community=snmp_community, port=snmp_port,
                                                is_ipv6=is_ipv6, timeout=snmp_timeout,
-                                               retry_count=snmp_retries, get_bulk_flag=snmp_bulk_flag,
+                                               retry_count=snmp_retries, get_bulk_flag=snmp_bulk,
                                                continue_on_errors=continue_on_errors,
                                                get_bulk_repetitions=snmp_bulk_repetitions,
                                                v3_context_engine_id=v3_context_engine_id,
                                                v3_context=v3_context)
         if snmp_record and snmp_record.lower() == "all":
             templates_list = ENTIRE_SNMP_OID_LIST
-            auto_detect_vendor = False
+            snmp_auto_detect_vendor = False
         elif snmp_record and snmp_record.lower().startswith("template:"):
             with open(snmp_record.lstrip("template:"), "r") as template_file:
                 templates_list = template_file.readlines()
         else:
             templates_list = DEFAULT_SNMP_OID_LIST
         result = SNMPOrchestrator(snmp_parameters,
-                                  auto_detect_vendor=auto_detect_vendor,
+                                  auto_detect_vendor=snmp_auto_detect_vendor,
                                   template_oid_list=templates_list).create_recording() or []
         return "".join(result)
 

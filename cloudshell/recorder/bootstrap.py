@@ -26,10 +26,11 @@ def version():
 @click.option(u'--snmp-password', help="Snmp password or auth")
 @click.option(u'--snmp-private-key', help="Snmp privacy key")
 @click.option(u'--snmp-auth-protocol', default="NONE",
-              help="Snmp auth encryption type: SHA, MD5, SHA224, SHA256, SHA384, SHA512")
+              help="Snmp auth encryption type: SHA, MD5, SHA224, SHA256, SHA384, SHA512, NONE. Default is NONE.")
 @click.option(u'--snmp-priv-protocol', default="NONE",
-              help="Snmp privacy encryption type: DES, 3DES, AES, AES128, AES192, AES192BLMT, AES256, AES256BLMT, NONE")
-@click.option(u'--snmp-auto-detect-vendor', default="true", help="Enables auto detect of device manufacturer")
+              help="Snmp privacy encryption type: DES, 3DES, AES, AES128, AES192, AES192BLMT, AES256, AES256BLMT, "
+                   "NONE. Default is NONE.")
+@click.option(u'--snmp-auto-detect-vendor', is_flag=True, help="Enables auto detect of device manufacturer")
 @click.option(u'--snmp-record', default="shells_based",
               help="Specify an oid template file for record adding 'template:'PATH_TO_FILE''. "
                    "Or set it to 'all' to record entire device. "
@@ -38,7 +39,7 @@ def version():
               help="Destination path, i.e. %APPDATA%\\Quali\\Recordings")
 @click.option(u'--snmp-timeout', default=2000, help="Snmp timeout")
 @click.option(u'--snmp-retries', default=2, help="Amount of snmp retires")
-@click.option(u'--snmp-bulk', default="false", help="Set to 'true' to use snmpbulk for better performance")
+@click.option(u'--snmp-bulk', is_flag=True, help="Add to use snmpbulk for better performance")
 @click.option(u'--snmp-bulk-repetitions', default=25, help="Amount of snmpbulk repetitions")
 def new(ip,
         destination_path,
@@ -54,12 +55,17 @@ def new(ip,
         snmp_record=None,
         snmp_timeout=2000,
         snmp_retries=2,
-        snmp_bulk="None",
+        snmp_bulk=False,
         snmp_bulk_repetitions=25,
-        snmp_auto_detect_vendor=None):
+        snmp_auto_detect_vendor=False):
     """
     Creates a new device recording based on a template
     """
+    if not snmp_user or not snmp_community:
+        with click.Context(new) as context:
+            click.echo(new.get_help(context))
+            return
+
     RecorderOrchestrator(ip, recording_type="both", destination_path=destination_path).new_recording(
         cli_user=cli_user, cli_password=cli_password,
         cli_enable_password=cli_enable_password,
