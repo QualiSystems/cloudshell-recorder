@@ -23,11 +23,11 @@ $ cloudshell-recorder new 127.0.0.1
 ### SNMP Recordings
 To create recording using SNMP v2 or v1 run the following command:
 ```
-$ cloudshell-recorder new 127.0.0.1 --snmp-community=public
+$ cloudshell-recorder new 127.0.0.1 --snmp-record-type=snmp --snmp-community=public
 ```
 For SNMP v3:
 ```
-$ cloudshell-recorder.exe new 192.168.42.235 --snmp-user=snmp_user_v3 --snmp-password=Password1 --snmp-private-key=Password2 --snmp-auth-protocol=SHA --snmp-priv-protocol=DES --destination-path=.\ --snmp-bulk
+$ cloudshell-recorder.exe new 192.168.42.235 --snmp-record-type=snmp --snmp-user=snmp_user_v3 --snmp-password=Password1 --snmp-private-key=Password2 --snmp-auth-protocol=SHA --snmp-priv-protocol=DES --destination-path=.\ --snmp-bulk
 ```
 More information available in app help:
 ```

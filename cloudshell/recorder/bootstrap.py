@@ -30,8 +30,10 @@ def version():
 @click.option(u'--snmp-priv-protocol', default="NONE",
               help="Snmp privacy encryption type: DES, 3DES, AES, AES128, AES192, AES192BLMT, AES256, AES256BLMT, "
                    "NONE. Default is NONE.")
+@click.option(u"--record-type", default="all", help="Defines what we will be recorded, "
+                                                    "possible values - cli, rest, snmp, all, by default = all")
 @click.option(u'--snmp-auto-detect-vendor', is_flag=True, help="Enables auto detect of device manufacturer")
-@click.option(u'--snmp-record', default="shells_based",
+@click.option(u'--snmp-record-oids', default="shells_based",
               help="Specify an oid template file for record adding 'template:PATH_TO_FILE'. "
                    "Or set it to 'all' to record entire device. "
                    "Default value is 'shells_based', and will record all oids used by the Shells.")
@@ -43,6 +45,7 @@ def version():
 @click.option(u'--snmp-bulk-repetitions', default=25, help="Amount of snmpbulk repetitions")
 def new(ip,
         destination_path,
+        record_type="all",
         cli_user=None,
         cli_password=None,
         cli_enable_password=None,
@@ -52,7 +55,7 @@ def new(ip,
         snmp_private_key=None,
         snmp_auth_protocol=None,
         snmp_priv_protocol=None,
-        snmp_record=None,
+        snmp_record_oids=None,
         snmp_timeout=2000,
         snmp_retries=2,
         snmp_bulk=False,
@@ -61,12 +64,12 @@ def new(ip,
     """
     Creates a new device recording based on a template
     """
-    if not snmp_user or not snmp_community:
+    if ("all" in record_type or "snmp" in record_type) and (not snmp_user or not snmp_community):
         with click.Context(new) as context:
             click.echo(new.get_help(context))
             return
 
-    RecorderOrchestrator(ip, recording_type="both", destination_path=destination_path).new_recording(
+    RecorderOrchestrator(ip, recording_type=record_type, destination_path=destination_path).new_recording(
         cli_user=cli_user, cli_password=cli_password,
         cli_enable_password=cli_enable_password,
         snmp_community=snmp_community,
@@ -74,7 +77,7 @@ def new(ip,
         snmp_private_key=snmp_private_key,
         snmp_auth_protocol=snmp_auth_protocol,
         snmp_priv_protocol=snmp_priv_protocol,
-        snmp_record=snmp_record,
+        snmp_record=snmp_record_oids,
         snmp_timeout=snmp_timeout,
         snmp_bulk=snmp_bulk,
         snmp_retries=snmp_retries,

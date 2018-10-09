@@ -1,4 +1,6 @@
 # from recorder.file_service.file_service import create_output_archive
+import click
+
 from cloudshell.recorder.file_service.file_service import create_output_archive
 
 from cloudshell.recorder.model.snmp_v2_parameters import SnmpV2Parameters
@@ -26,16 +28,30 @@ class RecorderOrchestrator(object):
                       snmp_record=None,
                       snmp_timeout=2000,
                       snmp_retries=2,
-                      snmp_bulk="None",
+                      snmp_bulk=False,
                       snmp_bulk_repetitions=25,
-                      snmp_auto_detect_vendor="true"):
+                      snmp_auto_detect_vendor=False):
+        create_cli_record = False
+        create_snmp_record = False
+        create_rest_record = False
+        if "all" in self._recording_type.lower():
+            create_cli_record = True
+            create_snmp_record = True
+            create_rest_record = True
+        if "cli" in self._recording_type.lower():
+            create_cli_record = True
+        if "snmp" in self._recording_type.lower():
+            create_snmp_record = True
+        if "rest" in self._recording_type.lower():
+            create_rest_record = True
 
         cli_recording = None
         snmp_recording = None
-        if cli_user or cli_password:
+
+        if create_cli_record and (cli_user or cli_password):
             cli_recording = self._new_cli_recording(cli_user=cli_user, cli_password=cli_password,
                                                     cli_enable_password=cli_enable_password)
-        if snmp_community or snmp_user:
+        if create_snmp_record and (snmp_community or snmp_user):
             snmp_recording = self._new_snmp_recording(snmp_community=snmp_community,
                                                       snmp_user=snmp_user, snmp_password=snmp_password,
                                                       snmp_private_key=snmp_private_key,
@@ -69,6 +85,7 @@ class RecorderOrchestrator(object):
                             continue_on_errors=0,
                             v3_context_engine_id=None,
                             v3_context=''):
+        click.secho("Preparing to start SNMP Recording")
         if snmp_user:
             snmp_parameters = SnmpV3Parameters(self._ip, v3_user=snmp_user, v3_auth_key=snmp_password,
                                                v3_priv_key=snmp_private_key, v3_auth_proto=snmp_auth_protocol,
@@ -92,7 +109,7 @@ class RecorderOrchestrator(object):
             snmp_auto_detect_vendor = False
         elif snmp_record and snmp_record.lower().startswith("template:"):
             with open(snmp_record.lstrip("template:"), "r") as template_file:
-                templates_list = template_file.readlines()
+                templates_list = template_file.read.split("\n")
         else:
             templates_list = DEFAULT_SNMP_OID_LIST
         result = SNMPOrchestrator(snmp_parameters,
