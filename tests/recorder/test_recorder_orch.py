@@ -131,7 +131,7 @@ class TestRecorderOrchestrator(TestCase):
         oids_list = ["test", "test"]
         create_recording_mock = MagicMock()
         snmp_orch_mock.return_value.create_recording = create_recording_mock
-        open_mock.return_value.__enter__.return_value.read.split.return_value = oids_list
+        open_mock.return_value.__enter__.return_value.read.return_value.split.return_value = oids_list
 
         # Act
         recorder._new_snmp_recording(snmp_community=snmp_community, snmp_record="template:.\\path_to_file")
