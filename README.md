@@ -1,11 +1,10 @@
-[![Join the chat at https://gitter.im/QualiSystems/cloudshell-recorder](https://badges.gitter.im/QualiSystems/cloudshell-recorder.svg)](https://gitter.im/QualiSystems/cloudshell-recorder?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/QualiSystems/cloudshell-recorder.svg?branch=develop)](https://travis-ci.org/QualiSystems/cloudshell-recorder) [![Coverage Status](https://coveralls.io/repos/github/QualiSystems/cloudshell-recorder/badge.svg?branch=dev)](https://coveralls.io/github/QualiSystems/scloudshell-recorder?branch=dev) 
 [![PyPI](https://img.shields.io/pypi/pyversions/cloudshell-recorder.svg?maxAge=2592000)]() [![PyPI](https://img.shields.io/pypi/v/cloudshell-recorder.svg?maxAge=2592000)]()
 [![Dependency Status](https://dependencyci.com/github/QualiSystems/cloudshell-recorder/badge)](https://dependencyci.com/github/QualiSystems/cloudshell-recorder)
 
 ---
 
-![quali](quali.png)
+![quali](https://github.com/QualiSystems/shellfoundry/blob/master/quali.png)
 
 # Cloudshell Recorder
 
