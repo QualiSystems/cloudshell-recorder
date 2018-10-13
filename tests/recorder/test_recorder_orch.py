@@ -5,7 +5,7 @@ from mock import patch, MagicMock
 from cloudshell.recorder.recorder_orchestrator import RecorderOrchestrator
 
 
-class TestRecorderOschestrator(TestCase):
+class TestRecorderOrchestrator(TestCase):
     IP = "1.1.1.1"
     PORT = 161
     DST_PATH = ".\\"
