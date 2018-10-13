@@ -1,6 +1,6 @@
-import zipfile
 
 import os
+from zipfile import ZipFile
 
 CLI_NAME = "cli"
 SNMP_NAME = "snmp"
@@ -12,7 +12,7 @@ def create_output_archive(cli_recording, snmp_recording, rest_recording, path, z
 
     if not zip_filename.lower().endswith(".zip"):
         zip_filename += ".zip"
-    if not snmp_recording and not cli_recording:
+    if not snmp_recording and not cli_recording and not rest_recording:
         return
     
     dst_path = os.path.expandvars(path)
@@ -22,7 +22,7 @@ def create_output_archive(cli_recording, snmp_recording, rest_recording, path, z
         pass
 
     zip_file_path = os.path.join(dst_path, zip_filename)
-    with zipfile.ZipFile(zip_file_path, "w") as zip_file:
+    with ZipFile(zip_file_path, "w") as zip_file:
         if cli_recording:
             zip_file.writestr("{}.{}".format(zip_name, CLI_NAME), cli_recording)
         if rest_recording:
