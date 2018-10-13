@@ -19,6 +19,9 @@ class RecorderOrchestrator(object):
     def new_recording(self, cli_user=None,
                       cli_password=None,
                       cli_enable_password=None,
+                      rest_user=None,
+                      rest_password=None,
+                      rest_token=None,
                       snmp_community=None,
                       snmp_user=None,
                       snmp_password=None,
@@ -46,11 +49,15 @@ class RecorderOrchestrator(object):
             create_rest_record = True
 
         cli_recording = None
+        rest_recording = None
         snmp_recording = None
 
         if create_cli_record and (cli_user or cli_password):
             cli_recording = self._new_cli_recording(cli_user=cli_user, cli_password=cli_password,
                                                     cli_enable_password=cli_enable_password)
+        if create_rest_record and (rest_user or rest_password):
+            rest_recording = self._new_rest_recording(rest_user=rest_user, rest_password=rest_password,
+                                                      rest_token=rest_token)
         if create_snmp_record and (snmp_community or snmp_user):
             snmp_recording = self._new_snmp_recording(snmp_community=snmp_community,
                                                       snmp_user=snmp_user, snmp_password=snmp_password,
@@ -63,9 +70,12 @@ class RecorderOrchestrator(object):
                                                       snmp_bulk=snmp_bulk,
                                                       snmp_bulk_repetitions=snmp_bulk_repetitions,
                                                       snmp_auto_detect_vendor=snmp_auto_detect_vendor)
-        path = create_output_archive(cli_recording, snmp_recording, self._destination_path, self._ip)
-        print "Output file path: {}".format(path)
-        print "Recording Completed."
+        if snmp_recording or cli_recording or rest_recording:
+            path = create_output_archive(cli_recording, snmp_recording, rest_recording, self._destination_path, self._ip)
+            click.secho("Output file path: {}".format(path))
+            click.secho("Recording Completed.")
+        else:
+            click.secho("Failed to record data, recordings are empty.")
 
     def _new_snmp_recording(self,
                             snmp_community=None,
@@ -118,5 +128,9 @@ class RecorderOrchestrator(object):
         return "".join(result)
 
     def _new_cli_recording(self, cli_user, cli_password, cli_enable_password):
+        result = ""
+        return result
+
+    def _new_rest_recording(self, rest_user, rest_password, rest_token):
         result = ""
         return result
