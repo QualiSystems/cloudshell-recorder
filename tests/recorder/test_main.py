@@ -1,4 +1,4 @@
-from unittest import TestCase, runner
+from unittest import TestCase
 
 from mock import patch
 

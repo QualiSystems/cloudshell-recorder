@@ -64,22 +64,24 @@ def new(ip,
     """
     Creates a new device recording based on a template
     """
-    if ("all" in record_type or "snmp" in record_type) and (not snmp_user or not snmp_community):
+
+    try:
+        RecorderOrchestrator(ip, recording_type=record_type, destination_path=destination_path).new_recording(
+            cli_user=cli_user, cli_password=cli_password,
+            cli_enable_password=cli_enable_password,
+            snmp_community=snmp_community,
+            snmp_user=snmp_user, snmp_password=snmp_password,
+            snmp_private_key=snmp_private_key,
+            snmp_auth_protocol=snmp_auth_protocol,
+            snmp_priv_protocol=snmp_priv_protocol,
+            snmp_record=snmp_record_oids,
+            snmp_timeout=snmp_timeout,
+            snmp_bulk=snmp_bulk,
+            snmp_retries=snmp_retries,
+            snmp_bulk_repetitions=snmp_bulk_repetitions,
+            snmp_auto_detect_vendor=snmp_auto_detect_vendor)
+    except Exception as e:
+        click.secho(e.message)
         with click.Context(new) as context:
             click.echo(new.get_help(context))
             return
-
-    RecorderOrchestrator(ip, recording_type=record_type, destination_path=destination_path).new_recording(
-        cli_user=cli_user, cli_password=cli_password,
-        cli_enable_password=cli_enable_password,
-        snmp_community=snmp_community,
-        snmp_user=snmp_user, snmp_password=snmp_password,
-        snmp_private_key=snmp_private_key,
-        snmp_auth_protocol=snmp_auth_protocol,
-        snmp_priv_protocol=snmp_priv_protocol,
-        snmp_record=snmp_record_oids,
-        snmp_timeout=snmp_timeout,
-        snmp_bulk=snmp_bulk,
-        snmp_retries=snmp_retries,
-        snmp_bulk_repetitions=snmp_bulk_repetitions,
-        snmp_auto_detect_vendor=snmp_auto_detect_vendor)

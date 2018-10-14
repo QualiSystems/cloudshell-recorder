@@ -37,14 +37,20 @@ class RecorderOrchestrator(object):
         create_cli_record = False
         create_snmp_record = False
         create_rest_record = False
+
         if "all" in self._recording_type.lower():
             create_cli_record = True
-            create_snmp_record = True
+            if snmp_community or snmp_user:
+                create_snmp_record = True
             create_rest_record = True
+
         if "cli" in self._recording_type.lower():
             create_cli_record = True
+
         if "snmp" in self._recording_type.lower():
-            create_snmp_record = True
+            if snmp_community or snmp_user:
+                create_snmp_record = True
+
         if "rest" in self._recording_type.lower():
             create_rest_record = True
 
@@ -52,13 +58,16 @@ class RecorderOrchestrator(object):
         rest_recording = None
         snmp_recording = None
 
+        if not create_snmp_record and not create_cli_record and not create_rest_record:
+            raise Exception("Cannot proceed with device recording, check arguments.")
+
         if create_cli_record and (cli_user or cli_password):
             cli_recording = self._new_cli_recording(cli_user=cli_user, cli_password=cli_password,
                                                     cli_enable_password=cli_enable_password)
         if create_rest_record and (rest_user or rest_password):
             rest_recording = self._new_rest_recording(rest_user=rest_user, rest_password=rest_password,
                                                       rest_token=rest_token)
-        if create_snmp_record and (snmp_community or snmp_user):
+        if create_snmp_record:
             snmp_recording = self._new_snmp_recording(snmp_community=snmp_community,
                                                       snmp_user=snmp_user, snmp_password=snmp_password,
                                                       snmp_private_key=snmp_private_key,
