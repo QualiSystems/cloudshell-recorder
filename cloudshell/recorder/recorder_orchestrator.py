@@ -19,7 +19,7 @@ class RecorderOrchestrator(object):
     def new_recording(self, cli_user=None,
                       cli_password=None,
                       cli_enable_password=None,
-                      cli_session_type=None,
+                      cli_session_type="auto",
                       rest_user=None,
                       rest_password=None,
                       rest_token=None,
@@ -138,7 +138,7 @@ class RecorderOrchestrator(object):
                                   template_oid_list=templates_list).create_recording() or []
         return "".join(result)
 
-    def _new_cli_recording(self, cli_user, cli_password, cli_enable_password, cli_session_type):
+    def _new_cli_recording(self, cli_user, cli_password, cli_enable_password=None, cli_session_type="auto"):
         result = ""
         return result
 

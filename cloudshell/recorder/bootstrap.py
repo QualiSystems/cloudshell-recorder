@@ -24,7 +24,8 @@ def version():
 @click.option(u'--cli-user', help="Cli user")
 @click.option(u'--cli-password', help="Cli password")
 @click.option(u'--cli-enable-password', help="Cli enable password")
-@click.option(u'--cli-session-type', default="auto", help="Cli session type: auto for autodetect session type, ssh, telnet")
+@click.option(u'--cli-session-type', default="auto",
+              help="Cli session type: auto for autodetect session type, ssh, telnet")
 @click.option(u'--rest-user', help="Rest user")
 @click.option(u'--rest-password', help="rest password")
 @click.option(u'--rest-token', help="Rest token")
@@ -56,7 +57,7 @@ def new(ip,
         cli_user=None,
         cli_password=None,
         cli_enable_password=None,
-        cli_session_type=None,
+        cli_session_type="auto",
         rest_user=None,
         rest_password=None,
         rest_token=None,
