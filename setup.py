@@ -21,6 +21,7 @@ setup(
     },
     install_requires=required,
     test_suite='tests',
+    python_requires=">=2.7, <3.0",
     tests_require=required_for_tests,
     version=version_from_file,
     description='QualiSystems CloudShell Device Recorder Python package',
