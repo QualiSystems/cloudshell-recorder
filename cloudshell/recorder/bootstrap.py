@@ -21,6 +21,13 @@ def version():
 
 @cli.command()
 @click.argument(u'ip')
+@click.option(u'--cli-user', help="Cli user")
+@click.option(u'--cli-password', help="Cli password")
+@click.option(u'--cli-enable-password', help="Cli enable password")
+@click.option(u'--cli-session-type', default="auto", help="Cli session type: auto for autodetect session type, ssh, telnet")
+@click.option(u'--rest-user', help="Rest user")
+@click.option(u'--rest-password', help="rest password")
+@click.option(u'--rest-token', help="Rest token")
 @click.option(u'--snmp-community', help="Snmp v1 or v2 community")
 @click.option(u'--snmp-user', help="Snmp v3 user")
 @click.option(u'--snmp-password', help="Snmp password or auth")
@@ -49,6 +56,10 @@ def new(ip,
         cli_user=None,
         cli_password=None,
         cli_enable_password=None,
+        cli_session_type=None,
+        rest_user=None,
+        rest_password=None,
+        rest_token=None,
         snmp_community=None,
         snmp_user=None,
         snmp_password=None,
@@ -69,6 +80,10 @@ def new(ip,
         RecorderOrchestrator(ip, recording_type=record_type, destination_path=destination_path).new_recording(
             cli_user=cli_user, cli_password=cli_password,
             cli_enable_password=cli_enable_password,
+            cli_session_type=cli_session_type,
+            rest_user=rest_user,
+            rest_password=rest_password,
+            rest_token=rest_token,
             snmp_community=snmp_community,
             snmp_user=snmp_user, snmp_password=snmp_password,
             snmp_private_key=snmp_private_key,
