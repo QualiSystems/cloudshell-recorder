@@ -21,36 +21,36 @@ def version():
 
 @cli.command()
 @click.argument(u'ip')
-@click.option(u'--cli-user', help="Cli user")
-@click.option(u'--cli-password', help="Cli password")
-@click.option(u'--cli-enable-password', help="Cli enable password")
+@click.option(u'--cli-user', help="CLI user")
+@click.option(u'--cli-password', help="CLI password")
+@click.option(u'--cli-enable-password', help="CLI enable password")
 @click.option(u'--cli-session-type', default="auto",
-              help="Cli session type: auto for autodetect session type, ssh, telnet")
-@click.option(u'--rest-user', help="Rest user")
-@click.option(u'--rest-password', help="rest password")
-@click.option(u'--rest-token', help="Rest token")
-@click.option(u'--snmp-community', help="Snmp v1 or v2 community")
-@click.option(u'--snmp-user', help="Snmp v3 user")
-@click.option(u'--snmp-password', help="Snmp password or auth")
-@click.option(u'--snmp-private-key', help="Snmp privacy key")
+              help="CLI session type: auto (for autodetect session type), ssh, telnet")
+@click.option(u'--rest-user', help="REST user")
+@click.option(u'--rest-password', help="REST password")
+@click.option(u'--rest-token', help="REST token")
+@click.option(u'--snmp-community', help="SNMP v1 or v2 community")
+@click.option(u'--snmp-user', help="SNMP v3 user")
+@click.option(u'--snmp-password', help="SNMP password or auth")
+@click.option(u'--snmp-private-key', help="SNMP privacy key")
 @click.option(u'--snmp-auth-protocol', default="NONE",
-              help="Snmp auth encryption type: SHA, MD5, SHA224, SHA256, SHA384, SHA512, NONE. Default is NONE.")
+              help="SNMP auth encryption type: SHA, MD5, SHA224, SHA256, SHA384, SHA512, NONE. Default is NONE.")
 @click.option(u'--snmp-priv-protocol', default="NONE",
-              help="Snmp privacy encryption type: DES, 3DES, AES, AES128, AES192, AES192BLMT, AES256, AES256BLMT, "
+              help="SNMP privacy encryption type: DES, 3DES, AES, AES128, AES192, AES192BLMT, AES256, AES256BLMT, "
                    "NONE. Default is NONE.")
-@click.option(u"--record-type", default="all", help="Defines what we will be recorded, "
-                                                    "possible values - cli, rest, snmp, all, by default = all")
+@click.option(u"--record-type", default="all", help="Defines what will be recorded. "
+                                                    "Possible values: cli, rest, snmp, all. Default is all")
 @click.option(u'--snmp-auto-detect-vendor', is_flag=True, help="Enables auto detect of device manufacturer")
 @click.option(u'--snmp-record-oids', default="shells_based",
-              help="Specify an oid template file for record adding 'template:PATH_TO_FILE'. "
-                   "Or set it to 'all' to record entire device. "
-                   "Default value is 'shells_based', and will record all oids used by the Shells.")
+              help="Specify an OID template file for adding records 'template:PATH_TO_FILE' "
+                   "or set it to 'all' to record entire device. "
+                   "Default is 'shells_based', which will record all OIDs used by the shells.")
 @click.option(u'--destination-path', default="%APPDATA%\\Quali\\Recordings",
               help="Destination path, i.e. %APPDATA%\\Quali\\Recordings")
-@click.option(u'--snmp-timeout', default=2000, help="Snmp timeout")
-@click.option(u'--snmp-retries', default=2, help="Amount of snmp retires")
+@click.option(u'--snmp-timeout', default=2000, help="SNMP timeout")
+@click.option(u'--snmp-retries', default=2, help="Number of SNMP retries")
 @click.option(u'--snmp-bulk', is_flag=True, help="Add to use snmpbulk for better performance")
-@click.option(u'--snmp-bulk-repetitions', default=25, help="Amount of snmpbulk repetitions")
+@click.option(u'--snmp-bulk-repetitions', default=25, help="Number of snmpbulk repetitions")
 def new(ip,
         destination_path,
         record_type="all",
