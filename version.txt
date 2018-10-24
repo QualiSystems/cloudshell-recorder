@@ -33,7 +33,7 @@ VSVersionInfo(
         StringStruct(u'ProductName', u'cloudshell-recorder'),
         StringStruct(u'ProductVersion', u'1.0.0.0'),
         StringStruct(u'InternalName', u'cloudshell-recorder'),
-        StringStruct(u'OriginalFilename', u'cloudshell-recorder.exe'),
+        StringStruct(u'OriginalFilename', u'cloudshell_recorder.exe'),
         StringStruct(u'FileVersion', u'96, 12, 19, 1'),
         StringStruct(u'FileDescription', u'Cloudshell device recorder'),
         StringStruct(u'LegalCopyright', u'Copyright 2016 Quali, Inc.'),

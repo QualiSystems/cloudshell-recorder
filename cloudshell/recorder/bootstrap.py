@@ -40,7 +40,8 @@ def version():
                    "NONE. Default is NONE.")
 @click.option(u"--record-type", default="all", help="Defines what will be recorded. "
                                                     "Possible values: cli, rest, snmp, all. Default is all")
-@click.option(u'--snmp-auto-detect-vendor', is_flag=True, help="Enables auto detect of device manufacturer")
+@click.option(u'--snmp-auto-detect-vendor', is_flag=True, default=False,
+              help="Enables auto detect of device manufacturer")
 @click.option(u'--snmp-record-oids', default="shells_based",
               help="Specify an OID template file for adding records 'template:PATH_TO_FILE' "
                    "or set it to 'all' to record entire device. "
@@ -49,7 +50,7 @@ def version():
               help="Destination path, i.e. %APPDATA%\\Quali\\Recordings")
 @click.option(u'--snmp-timeout', default=2000, help="SNMP timeout")
 @click.option(u'--snmp-retries', default=2, help="Number of SNMP retries")
-@click.option(u'--snmp-bulk', is_flag=False, help="Add to use snmpbulk for better performance")
+@click.option(u'--snmp-bulk', is_flag=True, default=False, help="Add to use snmpbulk for better performance")
 @click.option(u'--snmp-bulk-repetitions', default=25, help="Number of snmpbulk repetitions")
 def new(ip,
         destination_path,

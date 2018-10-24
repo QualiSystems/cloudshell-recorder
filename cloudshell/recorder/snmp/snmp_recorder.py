@@ -158,15 +158,16 @@ class SnmpRecorder(object):
             cb_ctx['lastOID'] = var_bind_table[-1][0][0]
 
         stop_flag = False
+        time.sleep(0.2)
 
         # Walk var-binds
         for varBindRow in var_bind_table:
             for oid, value in varBindRow:
                 # EOM
-                # _add_line = True
+                _add_line = True
                 if self._stop_oid and oid >= self._stop_oid:
                     stop_flag = True
-                    # _add_line = False
+                    _add_line = False
                 if (value is None or
                         value.tagSet in (rfc1905.NoSuchObject.tagSet,
                                          rfc1905.NoSuchInstance.tagSet,
@@ -197,9 +198,9 @@ class SnmpRecorder(object):
                 }
 
                 try:
-                    # line = ""
-                    # if _add_line:
-                    line = self.data_file_handler.format(oid, value, **context).replace("|", ", ")
+                    line = ""
+                    if _add_line:
+                        line = self.data_file_handler.format(oid, value, **context).replace("|", ", ")
                 except error.MoreDataNotification:
                     cb_ctx['count'] = 0
                     cb_ctx['iteration'] += 1
@@ -238,8 +239,8 @@ class SnmpRecorder(object):
                     log.msg('ERROR: %s' % (sys.exc_info()[1],))
                     continue
                 else:
-                    # if _add_line and line:
-                    self.output_file.append(line)
+                    if _add_line and line:
+                        self.output_file.append(line)
 
                     cb_ctx['count'] += 1
                     cb_ctx['total'] += 1
