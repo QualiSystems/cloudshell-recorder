@@ -49,7 +49,7 @@ def version():
               help="Destination path, i.e. %APPDATA%\\Quali\\Recordings")
 @click.option(u'--snmp-timeout', default=2000, help="SNMP timeout")
 @click.option(u'--snmp-retries', default=2, help="Number of SNMP retries")
-@click.option(u'--snmp-bulk', is_flag=True, help="Add to use snmpbulk for better performance")
+@click.option(u'--snmp-bulk', is_flag=False, help="Add to use snmpbulk for better performance")
 @click.option(u'--snmp-bulk-repetitions', default=25, help="Number of snmpbulk repetitions")
 def new(ip,
         destination_path,
