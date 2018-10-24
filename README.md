@@ -19,17 +19,17 @@ To generate a recording, run one of the following commands depending on your SNM
 
 For SNMP v1 and v2:
 ```
-$ cloudshell-recorder new 127.0.0.1 --record-type=snmp --snmp-community=public
+$ cloudshell_recorder new 127.0.0.1 --record-type=snmp --snmp-community=public
 ```
 For SNMP v3:
 ```
-$ cloudshell-recorder.exe new 192.168.42.235 --record-type=snmp --snmp-user=snmp_user_v3 --snmp-password=Password1 --snmp-private-key=Password2 --snmp-auth-protocol=SHA --snmp-priv-protocol=DES --destination-path=.\ --snmp-bulk
+$ cloudshell_recorder.exe new 192.168.42.235 --record-type=snmp --snmp-user=snmp_user_v3 --snmp-password=Password1 --snmp-private-key=Password2 --snmp-auth-protocol=SHA --snmp-priv-protocol=DES --destination-path=.\ --snmp-bulk
 ```
 ## CloudShell Recorder Help 
 
 For additional information, run the following command to view the CloudShell Recorder help file: 
 ```
-$ cloudshell-recorder new --help
+$ cloudshell_recorder new --help
 ```
 
 ## License
