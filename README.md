@@ -11,11 +11,13 @@
 The CloudShell Recorder is a command line utility tool used to record customer device responses to certain SNMP commands, for troubleshooting purposes. 
 
 ## Installing the CloudShell Recorder
-- Using pip: ```$ python -m pip install cloudshell-recorder```,
-- Download the compiled ```cloudshell_recorder.exe``` file from one of our [Releases](https://github.com/QualiSystems/cloudshell-recorder/releases)
+- Using pip: ```$ python -m pip install cloudshell-recorder```
+- Download the compiled ```cloudshell_recorder.exe``` file from one of our [Releases](https://github.com/QualiSystems/cloudshell-recorder/releases).
 
-### Producing an SNMP Recordings
-To generate a recording, run one of the following commands depending on your SNMP version: 
+### Producing an SNMP Recording
+To generate a recording, run one of the following commands depending on your SNMP version:
+
+For SNMP v1 and v2:
 ```
 $ cloudshell-recorder new 127.0.0.1 --record-type=snmp --snmp-community=public
 ```
