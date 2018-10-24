@@ -8,19 +8,16 @@
 
 # Cloudshell Recorder
 
-Command line utility to create devices SNMP recordings.
+The CloudShell Recorder is a command line utility tool used to record customer device responses to certain SNMP commands, for troubleshooting purposes. 
 
-## Installing
-```
-$ python -m pip install cloudshell-recorder
-```
-Or you are welcome to download compiled ```cloudshell_recorder.exe``` from one of our [Releases](https://github.com/QualiSystems/cloudshell-recorder/releases)
-## Usage
-```
-$ cloudshell-recorder new 127.0.0.1
-```
-### SNMP Recordings
-To create recording using SNMP v2 or v1 run the following command:
+## Installing the CloudShell Recorder
+- Using pip: ```$ python -m pip install cloudshell-recorder```
+- Download the compiled ```cloudshell_recorder.exe``` file from one of our [Releases](https://github.com/QualiSystems/cloudshell-recorder/releases).
+
+### Producing an SNMP Recording
+To generate a recording, run one of the following commands depending on your SNMP version:
+
+For SNMP v1 and v2:
 ```
 $ cloudshell-recorder new 127.0.0.1 --record-type=snmp --snmp-community=public
 ```
@@ -28,10 +25,12 @@ For SNMP v3:
 ```
 $ cloudshell-recorder.exe new 192.168.42.235 --record-type=snmp --snmp-user=snmp_user_v3 --snmp-password=Password1 --snmp-private-key=Password2 --snmp-auth-protocol=SHA --snmp-priv-protocol=DES --destination-path=.\ --snmp-bulk
 ```
-More information available in app help:
+## CloudShell Recorder Help 
+
+For additional information, run the following command to view the CloudShell Recorder help file: 
 ```
 $ cloudshell-recorder new --help
 ```
 
 ## License
-[Apache License 2.0](https://github.com/QualiSystems/cloudshell-recorder/blob/dev/LICENSE)
+The CloudShell Recorder is licensed under the [Apache License 2.0](https://github.com/QualiSystems/cloudshell-recorder/blob/dev/LICENSE).
