@@ -127,12 +127,13 @@ class RecorderOrchestrator(object):
                                                v3_context=v3_context)
         if snmp_record and snmp_record.lower() == "all":
             templates_list = ENTIRE_SNMP_OID_LIST
-            snmp_auto_detect_vendor = False
         elif snmp_record and snmp_record.lower().startswith("template:"):
             with open(snmp_record.lstrip("template:"), "r") as template_file:
                 templates_list = template_file.read().split("\n")
         else:
             templates_list = DEFAULT_SNMP_OID_LIST
+            snmp_auto_detect_vendor = True
+            
         result = SNMPOrchestrator(snmp_parameters,
                                   auto_detect_vendor=snmp_auto_detect_vendor,
                                   template_oid_list=templates_list).create_recording() or []
