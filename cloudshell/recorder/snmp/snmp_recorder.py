@@ -19,13 +19,14 @@ from snmpsim import error, log
 class SnmpRecorder(object):
     def __init__(self, snmp_parameters):
         self.snmp_parameters = snmp_parameters
-        self.output_file = list()
+        self._output_list = None
         self.data_file_handler = SnmpRecord()
         self._oid = None
         self._stop_oid = None
         self._cmd_gen = None
 
     def create_snmp_record(self, oid, stop_oid=None, get_subtree=True):
+        self._output_list = list()
         self._oid = univ.ObjectIdentifier(oid)
         if stop_oid:
             self._stop_oid = univ.ObjectIdentifier(stop_oid)
@@ -71,8 +72,6 @@ class SnmpRecorder(object):
 
         t = time.time()
 
-        # Python 2.4 does not support the "finally" clause
-
         exc_info = None
 
         try:
@@ -93,7 +92,7 @@ class SnmpRecorder(object):
             for line in traceback.format_exception(*exc_info):
                 log.msg(line.replace('\n', ';'))
 
-        return self.output_file
+        return self._output_list
 
     def cb_fun(self, snmp_engine, send_request_handle, error_indication,
               error_status, error_index, var_bind_table, cb_ctx):
@@ -239,8 +238,8 @@ class SnmpRecorder(object):
                     log.msg('ERROR: %s' % (sys.exc_info()[1],))
                     continue
                 else:
-                    if _add_line and line:
-                        self.output_file.append(line)
+                    if _add_line and line and line not in self._output_list:
+                        self._output_list.append(line)
 
                     cb_ctx['count'] += 1
                     cb_ctx['total'] += 1

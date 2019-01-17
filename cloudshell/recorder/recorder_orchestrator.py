@@ -133,7 +133,7 @@ class RecorderOrchestrator(object):
         else:
             templates_list = DEFAULT_SNMP_OID_LIST
             snmp_auto_detect_vendor = True
-            
+
         result = SNMPOrchestrator(snmp_parameters,
                                   auto_detect_vendor=snmp_auto_detect_vendor,
                                   template_oid_list=templates_list).create_recording() or []
