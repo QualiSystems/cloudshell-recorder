@@ -81,6 +81,7 @@ class TestSnmpRecorder(TestCase):
         snmp_record.return_value.format.side_effect = ["0", error.MoreDataNotification, "0", "0", "0"]
 
         # Act
+        recorder._output_list = list()
         recorder.cb_fun(snmp_engine, send_request_handle, error_indication,
                         error_status, error_index, var_bind_table, cb_ctx)
 
