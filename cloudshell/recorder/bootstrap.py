@@ -98,7 +98,9 @@ def new(ip,
             snmp_bulk_repetitions=snmp_bulk_repetitions,
             snmp_auto_detect_vendor=snmp_auto_detect_vendor)
     except Exception as e:
-        click.secho(e.message)
+        click.secho("\n" + "*"*(7 + len(e.message)))
+        click.secho("\nERROR: {}\n".format(e.message))
+        click.secho("*" * (7 + len(e.message)) + "\n")
         with click.Context(new) as context:
             click.echo(new.get_help(context))
             return

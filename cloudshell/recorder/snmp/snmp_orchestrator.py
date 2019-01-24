@@ -1,11 +1,11 @@
 import re
 import click
+from pysnmp.proto.errind import RequestTimedOut
 
 from cloudshell.recorder.snmp.snmp_service import SnmpService
 
 
 class SNMPOrchestrator(object):
-    DEFAULT_SYSTEM_OID = "1.3.6.1.2.1.1"
 
     def __init__(self, snmp_parameters, auto_detect_vendor=True, is_async=False, device_type=None,
                  template_oid_list=None, record_entire_device=False):
@@ -18,21 +18,23 @@ class SNMPOrchestrator(object):
 
     def create_recording(self):
         recorded_data = []
+        sys_obj_id = None
         with SnmpService(self.snmp_parameters) as snmp_recorder:
-
-            recorded_data.extend(snmp_recorder.create_snmp_record(oid=self.DEFAULT_SYSTEM_OID))
-
-            if not recorded_data:
-                raise Exception("Failed to initialize snmp connection")
+            try:
+                sys_obj_list = snmp_recorder.create_snmp_record(oid="1.3.6.1.2.1.1.2", get_bulk_repetitions=1)
+                if sys_obj_list:
+                    sys_obj_id = sys_obj_list[0]
+            except RequestTimedOut as e:
+                # add logger here
+                raise Exception("Failed to initialize snmp connection: \n{}".format(e))
 
             if self._auto_detect_vendor:
-                sys_oid = [x for x in recorded_data if x.startswith("1.3.6.1.2.1.1.2")][-1]
-                if sys_oid:
-                    customer_oid_match = re.search(r"1.3.6.1.4.1.\d+", sys_oid)
-                    if customer_oid_match:
-                        self._template_oids_list.append(customer_oid_match.group())
+                customer_oid_match = re.search(r"1.3.6.1.4.1.\d+", sys_obj_id or "")
+                if customer_oid_match:
+                    self._template_oids_list.append(customer_oid_match.group())
                 else:
-                    click.secho("Unable to detect target device manufacturer, skipping auto detect.")
+                    click.secho("Unable to detect target device manufacturer.")
+                    self._template_oids_list.append("1.3.6.1.4.1")
 
             snmp_record_label = "Start SNMP recording for {}".format(self.snmp_parameters.ip)
             with click.progressbar(length=len(self._template_oids_list),
@@ -51,7 +53,10 @@ class SNMPOrchestrator(object):
                         oid_line = re.sub(r"^\.*|\D+$", "", oid_line)
                         if not re.search(r"^\d+(.\d+)*$", oid_line):
                             continue
-                    recorded_data.extend(snmp_recorder.create_snmp_record(oid=oid_line))
+                    try:
+                        recorded_data.extend(snmp_recorder.create_snmp_record(oid=oid_line))
+                    except:
+                        pass
                     pbar.next()
 
                 return recorded_data

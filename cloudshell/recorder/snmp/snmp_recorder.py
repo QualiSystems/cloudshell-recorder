@@ -1,10 +1,10 @@
 import time
 import sys
 
-import traceback
 from pyasn1.type import univ
 from pysnmp.proto import rfc1902
 from pysnmp.proto import rfc1905
+from pysnmp.proto.errind import RequestTimedOut
 
 from cloudshell.recorder.model.snmp_record import SnmpRecord
 
@@ -19,18 +19,23 @@ from snmpsim import error, log
 class SnmpRecorder(object):
     def __init__(self, snmp_parameters):
         self.snmp_parameters = snmp_parameters
+        self._get_bulk_repetitions = None
         self._output_list = None
         self.data_file_handler = SnmpRecord()
         self._oid = None
         self._stop_oid = None
         self._cmd_gen = None
 
-    def create_snmp_record(self, oid, stop_oid=None, get_subtree=True):
+    def create_snmp_record(self, oid, stop_oid=None, get_subtree=True, get_bulk_repetitions=None):
+        self._get_bulk_repetitions = self.snmp_parameters.get_bulk_repetitions
+        if get_bulk_repetitions:
+            self._get_bulk_repetitions = get_bulk_repetitions
         self._output_list = list()
         self._oid = univ.ObjectIdentifier(oid)
         if stop_oid:
             self._stop_oid = univ.ObjectIdentifier(stop_oid)
         elif get_subtree:
+
             _stop_oid = "{}{}".format(oid[:-1], int(oid[-1:]) + 1)
             self._stop_oid = univ.ObjectIdentifier(_stop_oid)
 
@@ -52,7 +57,7 @@ class SnmpRecorder(object):
                 self.snmp_parameters.snmp_engine,
                 'tgt',
                 self.snmp_parameters.v3_context_engine_id, self.snmp_parameters.v3_context,
-                0, self.snmp_parameters.get_bulk_repetitions,
+                0, self._get_bulk_repetitions,
                 [(self._oid, None)],
                 self.cb_fun, cb_ctx
             )
@@ -77,28 +82,32 @@ class SnmpRecorder(object):
         try:
             self.snmp_parameters.snmp_engine.transportDispatcher.runDispatcher()
         except KeyboardInterrupt:
-            log.msg('Shutting down process...')
+            pass
+            # log.msg('Shutting down process...')
+        except RequestTimedOut as e:
+            raise
         except Exception:
             exc_info = sys.exc_info()
 
-        t = time.time() - t
+        # t = time.time() - t
 
         cb_ctx['total'] += cb_ctx['count']
 
-        log.msg('OIDs dumped: %s, elapsed: %.2f sec, rate: %.2f OIDs/sec, errors: %d' % (
-            cb_ctx['total'], t, t and cb_ctx['count'] // t or 0, cb_ctx['errors']))
-
-        if exc_info:
-            for line in traceback.format_exception(*exc_info):
-                log.msg(line.replace('\n', ';'))
+        # log.msg('OIDs dumped: %s, elapsed: %.2f sec, rate: %.2f OIDs/sec, errors: %d' % (
+        #     cb_ctx['total'], t, t and cb_ctx['count'] // t or 0, cb_ctx['errors']))
+        # if exc_info:
+        #     for line in traceback.format_exception(*exc_info):
+        #         log.msg(line.replace('\n', ';'))
 
         return self._output_list
 
     def cb_fun(self, snmp_engine, send_request_handle, error_indication,
               error_status, error_index, var_bind_table, cb_ctx):
+        if isinstance(error_indication, RequestTimedOut):
+            raise error_indication
         if error_indication and not cb_ctx['retries']:
             cb_ctx['errors'] += 1
-            log.msg('SNMP Engine error: %s' % error_indication)
+            # log.msg('SNMP Engine error: %s' % error_indication)
             return
         # SNMPv1 response may contain noSuchName error *and* SNMPv2c exception,
         # so we ignore noSuchName error here
@@ -133,7 +142,7 @@ class SnmpRecorder(object):
                         snmp_engine,
                         'tgt',
                         self.snmp_parameters.v3_context_engine_id, self.snmp_parameters.v3_context,
-                        0, self.snmp_parameters.get_bulk_repetitions,
+                        0, self._get_bulk_repetitions,
                         [(next_oid, None)],
                         self.cb_fun, cb_ctx
                     )
@@ -217,7 +226,7 @@ class SnmpRecorder(object):
                             snmp_engine,
                             'tgt',
                             self.snmp_parameters.v3_context_engine_id, self.snmp_parameters.v3_context,
-                            0, self.snmp_parameters.get_bulk_repetitions,
+                            0, self._get_bulk_repetitions,
                             [(self._oid, None)],
                             self.cb_fun, cb_ctx
                         )

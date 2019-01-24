@@ -78,6 +78,7 @@ class TestSnmpRecorder(TestCase):
         cb_ctx = MagicMock()
         recorder = SnmpRecorder(params)
         recorder._cmd_gen = MagicMock()
+        recorder._get_bulk_repetitions = MagicMock()
         snmp_record.return_value.format.side_effect = ["0", error.MoreDataNotification, "0", "0", "0"]
 
         # Act
@@ -89,7 +90,7 @@ class TestSnmpRecorder(TestCase):
         recorder._cmd_gen.sendVarBinds.assert_called_with(snmp_engine,
                                                           'tgt',
                                                           params.v3_context_engine_id, params.v3_context,
-                                                          0, params.get_bulk_repetitions,
+                                                          0, recorder._get_bulk_repetitions,
                                                           [(None, None)],
                                                           recorder.cb_fun, cb_ctx)
         self.assertEqual(1, recorder._cmd_gen.sendVarBinds.call_count)
@@ -110,6 +111,7 @@ class TestSnmpRecorder(TestCase):
         cb_ctx = MagicMock(return_value={"retries": "90"})
         recorder = SnmpRecorder(params)
         recorder._cmd_gen = MagicMock()
+        recorder._get_bulk_repetitions = 10
 
         # Act
         recorder.cb_fun(snmp_engine, send_request_handle, error_indication,
@@ -119,7 +121,7 @@ class TestSnmpRecorder(TestCase):
         recorder._cmd_gen.sendVarBinds.assert_called_with(snmp_engine,
                                                           'tgt',
                                                           params.v3_context_engine_id, params.v3_context,
-                                                          0, params.get_bulk_repetitions,
+                                                          0, recorder._get_bulk_repetitions,
                                                           [(
                                                            var_bind_table.__getitem__.return_value.__getitem__.return_value.__getitem__.return_value,
                                                            None)],
