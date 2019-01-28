@@ -187,6 +187,41 @@ class TestRecorderOrchestrator(TestCase):
                                                v3_context_engine_id=None,
                                                v3_context="")
         snmp_orch_mock.assert_called_once_with(snmp_v3_params.return_value,
+                                               auto_detect_vendor=True,
+                                               template_oid_list=oids_list_mock)
+        create_recording_mock.assert_called_once()
+
+    @patch("cloudshell.recorder.recorder_orchestrator.SNMPOrchestrator")
+    @patch("cloudshell.recorder.recorder_orchestrator.SnmpV3Parameters")
+    @patch("cloudshell.recorder.recorder_orchestrator.ENTIRE_SNMP_OID_LIST")
+    def test_snmp_v3_recording_all_snmp_tables(self, oids_list_mock, snmp_v3_params, snmp_orch_mock):
+        # Setup
+        recorder = self.get_recorder(self.REC_All)
+        snmp_user = "user"
+        snmp_password = "password"
+        snmp_private_key = "priv_key"
+        snmp_auth_protocol = "SHA"
+        snmp_priv_protocol = "DES"
+        create_recording_mock = MagicMock()
+        snmp_orch_mock.return_value.create_recording = create_recording_mock
+
+        # Act
+        recorder._new_snmp_recording(snmp_user=snmp_user, snmp_password=snmp_password,
+                                     snmp_private_key=snmp_private_key, snmp_auth_protocol=snmp_auth_protocol,
+                                     snmp_priv_protocol=snmp_priv_protocol, snmp_record="all")
+
+        # Assert
+        snmp_v3_params.assert_called_once_with(self.IP, v3_user=snmp_user, v3_auth_key=snmp_password,
+                                               v3_priv_key=snmp_private_key,
+                                               v3_auth_proto=snmp_auth_protocol,
+                                               v3_priv_proto=snmp_priv_protocol, port=self.PORT,
+                                               is_ipv6=False, timeout=2000,
+                                               retry_count=2, get_bulk_flag=False,
+                                               continue_on_errors=0,
+                                               get_bulk_repetitions=25,
+                                               v3_context_engine_id=None,
+                                               v3_context="")
+        snmp_orch_mock.assert_called_once_with(snmp_v3_params.return_value,
                                                auto_detect_vendor=False,
                                                template_oid_list=oids_list_mock)
         create_recording_mock.assert_called_once()

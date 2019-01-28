@@ -38,9 +38,10 @@ def version():
 @click.option(u'--snmp-priv-protocol', default="NONE",
               help="SNMP privacy encryption type: DES, 3DES, AES, AES128, AES192, AES192BLMT, AES256, AES256BLMT, "
                    "NONE. Default is NONE.")
-@click.option(u"--record-type", default="all", help="Defines what will be recorded. "
+@click.option(u"--record-type", multiple=True, default="all", help="Defines what will be recorded. "
                                                     "Possible values: cli, rest, snmp, all. Default is all")
-@click.option(u'--snmp-auto-detect-vendor', is_flag=True, help="Enables auto detect of device manufacturer")
+@click.option(u'--snmp-auto-detect-vendor', is_flag=True, default=False,
+              help="Enables auto detect of device manufacturer")
 @click.option(u'--snmp-record-oids', default="shells_based",
               help="Specify an OID template file for adding records 'template:PATH_TO_FILE' "
                    "or set it to 'all' to record entire device. "
@@ -49,7 +50,7 @@ def version():
               help="Destination path, i.e. %APPDATA%\\Quali\\Recordings")
 @click.option(u'--snmp-timeout', default=2000, help="SNMP timeout")
 @click.option(u'--snmp-retries', default=2, help="Number of SNMP retries")
-@click.option(u'--snmp-bulk', is_flag=False, help="Add to use snmpbulk for better performance")
+@click.option(u'--snmp-bulk', is_flag=True, default=False, help="Add to use snmpbulk for better performance")
 @click.option(u'--snmp-bulk-repetitions', default=25, help="Number of snmpbulk repetitions")
 def new(ip,
         destination_path,
@@ -97,7 +98,7 @@ def new(ip,
             snmp_bulk_repetitions=snmp_bulk_repetitions,
             snmp_auto_detect_vendor=snmp_auto_detect_vendor)
     except Exception as e:
-        click.secho(e.message)
+        click.secho("\n {0}\nERROR: {1}\n{0}\n".format((7 + len(e.message)), e.message))
         with click.Context(new) as context:
             click.echo(new.get_help(context))
             return
