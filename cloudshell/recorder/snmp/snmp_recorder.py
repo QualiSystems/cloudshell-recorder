@@ -4,7 +4,7 @@ import sys
 from pyasn1.type import univ
 from pysnmp.proto import rfc1902
 from pysnmp.proto import rfc1905
-from pysnmp.proto.errind import RequestTimedOut
+from pysnmp.proto.errind import RequestTimedOut, requestTimedOut
 
 from cloudshell.recorder.model.snmp_record import SnmpRecord
 
@@ -19,17 +19,16 @@ from snmpsim import error, log
 class SnmpRecorder(object):
     def __init__(self, snmp_parameters):
         self.snmp_parameters = snmp_parameters
-        self._get_bulk_repetitions = None
+        self._get_bulk_flag = None
         self._output_list = None
         self.data_file_handler = SnmpRecord()
         self._oid = None
         self._stop_oid = None
-        self._cmd_gen = None
 
-    def create_snmp_record(self, oid, stop_oid=None, get_subtree=True, get_bulk_repetitions=None):
-        self._get_bulk_repetitions = self.snmp_parameters.get_bulk_repetitions
-        if get_bulk_repetitions:
-            self._get_bulk_repetitions = get_bulk_repetitions
+    def create_snmp_record(self, oid, stop_oid=None, get_subtree=True, get_single_value=False):
+        self._get_bulk_flag = self.snmp_parameters.get_bulk_flag
+        if get_single_value and self._get_bulk_flag:
+            self._get_bulk_flag = False
         self._output_list = list()
         self._oid = univ.ObjectIdentifier(oid)
         if stop_oid:
@@ -43,51 +42,37 @@ class SnmpRecorder(object):
             'total': 0,
             'count': 0,
             'errors': 0,
+            'is_snmp_timeout': False,
             'iteration': 0,
             'reqTime': time.time(),
             '': True,
-            'retries': self.snmp_parameters.continue_on_errors,
+            'retries': self.snmp_parameters.retry_count,
             'lastOID': oid
         }
 
-        if self.snmp_parameters.get_bulk_flag:
-            self._cmd_gen = cmdgen.BulkCommandGenerator()
-
-            self._cmd_gen.sendVarBinds(
-                self.snmp_parameters.snmp_engine,
-                'tgt',
-                self.snmp_parameters.v3_context_engine_id, self.snmp_parameters.v3_context,
-                0, self._get_bulk_repetitions,
-                [(self._oid, None)],
-                self.cb_fun, cb_ctx
-            )
+        if self._get_bulk_flag:
+            self.send_bulk_var_binds(self._oid, cb_ctx)
         else:
-            self._cmd_gen = cmdgen.NextCommandGenerator()
-
-            self._cmd_gen.sendVarBinds(
-                self.snmp_parameters.snmp_engine,
-                'tgt',
-                self.snmp_parameters.v3_context_engine_id, self.snmp_parameters.v3_context,
-                [(self._oid, None)],
-                self.cb_fun, cb_ctx
-            )
+            self.send_walk_var_binds(self._oid, cb_ctx)
 
         log.msg('Sending initial %s request for %s ....' % (
             self.snmp_parameters.get_bulk_flag and 'GETBULK' or 'GETNEXT', self._oid))
 
-        t = time.time()
+        # t = time.time()
 
-        exc_info = None
+        # exc_info = None
 
         try:
             self.snmp_parameters.snmp_engine.transportDispatcher.runDispatcher()
         except KeyboardInterrupt:
             pass
             # log.msg('Shutting down process...')
-        except RequestTimedOut as e:
-            raise
         except Exception:
             exc_info = sys.exc_info()
+            pass
+
+        if cb_ctx.get("is_snmp_timeout") and not self._output_list:
+            raise requestTimedOut
 
         # t = time.time() - t
 
@@ -103,8 +88,15 @@ class SnmpRecorder(object):
 
     def cb_fun(self, snmp_engine, send_request_handle, error_indication,
               error_status, error_index, var_bind_table, cb_ctx):
+
+        if cb_ctx['is_snmp_timeout'] and self.snmp_parameters.get_bulk_flag:
+            self._get_bulk_flag = True
+            cb_ctx['is_snmp_timeout'] = False
+
         if isinstance(error_indication, RequestTimedOut):
-            raise error_indication
+            cb_ctx['is_snmp_timeout'] = True
+            self._get_bulk_flag = False
+
         if error_indication and not cb_ctx['retries']:
             cb_ctx['errors'] += 1
             # log.msg('SNMP Engine error: %s' % error_indication)
@@ -123,8 +115,8 @@ class SnmpRecorder(object):
                 # fuzzy logic of walking a broken OID
                 if len(next_oid) < 4:
                     pass
-                elif (self.snmp_parameters.continue_on_errors - cb_ctx[
-                    'retries']) * 10 / self.snmp_parameters.continue_on_errors > 5:
+                elif (self.snmp_parameters.retry_count - cb_ctx[
+                    'retries']) * 10 / self.snmp_parameters.retry_count > 5:
                     next_oid = next_oid[:-2] + (next_oid[-2] + 1,)
                 elif next_oid[-1]:
                     next_oid = next_oid[:-1] + (next_oid[-1] + 1,)
@@ -137,29 +129,16 @@ class SnmpRecorder(object):
                 log.msg('Retrying with OID %s (%s retries left)...' % (next_oid, cb_ctx['retries']))
 
                 # initiate another SNMP walk iteration
-                if self.snmp_parameters.get_bulk_flag:
-                    self._cmd_gen.sendVarBinds(
-                        snmp_engine,
-                        'tgt',
-                        self.snmp_parameters.v3_context_engine_id, self.snmp_parameters.v3_context,
-                        0, self._get_bulk_repetitions,
-                        [(next_oid, None)],
-                        self.cb_fun, cb_ctx
-                    )
+                if self._get_bulk_flag:
+                    self.send_bulk_var_binds(next_oid, cb_ctx)
                 else:
-                    self._cmd_gen.sendVarBinds(
-                        snmp_engine,
-                        'tgt',
-                        self.snmp_parameters.v3_context_engine_id, self.snmp_parameters.v3_context,
-                        [(next_oid, None)],
-                        self.cb_fun, cb_ctx
-                    )
+                    self.send_walk_var_binds(next_oid, cb_ctx)
 
             cb_ctx['errors'] += 1
 
             return
 
-        if self.snmp_parameters.continue_on_errors != cb_ctx['retries']:
+        if self.snmp_parameters.retry_count != cb_ctx['retries']:
             cb_ctx['retries'] += 1
 
         if var_bind_table and var_bind_table[-1] and var_bind_table[-1][0]:
@@ -221,23 +200,10 @@ class SnmpRecorder(object):
                         time.sleep(more_data_notification['period'])
 
                     # initiate another SNMP walk iteration
-                    if self.snmp_parameters.get_bulk_flag:
-                        self._cmd_gen.sendVarBinds(
-                            snmp_engine,
-                            'tgt',
-                            self.snmp_parameters.v3_context_engine_id, self.snmp_parameters.v3_context,
-                            0, self._get_bulk_repetitions,
-                            [(self._oid, None)],
-                            self.cb_fun, cb_ctx
-                        )
+                    if self._get_bulk_flag:
+                        self.send_bulk_var_binds(self._oid, cb_ctx)
                     else:
-                        self._cmd_gen.sendVarBinds(
-                            snmp_engine,
-                            'tgt',
-                            self.snmp_parameters.v3_context_engine_id, self.snmp_parameters.v3_context,
-                            [(self._oid, None)],
-                            self.cb_fun, cb_ctx
-                        )
+                        self.send_walk_var_binds(self._oid, cb_ctx)
 
                     stop_flag = True  # stop current iteration
 
@@ -261,3 +227,26 @@ class SnmpRecorder(object):
         cb_ctx['reqTime'] = time.time()
         # Continue walking
         return not stop_flag
+
+    def send_walk_var_binds(self, oid, cb_ctx):
+        cmd_gen = cmdgen.NextCommandGenerator()
+
+        cmd_gen.sendVarBinds(
+            self.snmp_parameters.snmp_engine,
+            'tgt',
+            self.snmp_parameters.v3_context_engine_id, self.snmp_parameters.v3_context,
+            [(oid, None)],
+            self.cb_fun, cb_ctx
+        )
+
+    def send_bulk_var_binds(self, oid, cb_ctx):
+        cmd_gen = cmdgen.BulkCommandGenerator()
+
+        cmd_gen.sendVarBinds(
+            self.snmp_parameters.snmp_engine,
+            'tgt',
+            self.snmp_parameters.v3_context_engine_id, self.snmp_parameters.v3_context,
+            0, self.snmp_parameters.get_bulk_repetitions,
+            [(oid, None)],
+            self.cb_fun, cb_ctx
+        )

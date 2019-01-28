@@ -6,6 +6,8 @@ from cloudshell.recorder.snmp.snmp_service import SnmpService
 
 
 class SNMPOrchestrator(object):
+    SYS_OBJECT_ID_OID = "1.3.6.1.2.1.1.2"
+    ROOT_VENDOR_OID = "1.3.6.1.4.1"
 
     def __init__(self, snmp_parameters, auto_detect_vendor=True, is_async=False, device_type=None,
                  template_oid_list=None, record_entire_device=False):
@@ -21,7 +23,7 @@ class SNMPOrchestrator(object):
         sys_obj_id = None
         with SnmpService(self.snmp_parameters) as snmp_recorder:
             try:
-                sys_obj_list = snmp_recorder.create_snmp_record(oid="1.3.6.1.2.1.1.2", get_bulk_repetitions=1)
+                sys_obj_list = snmp_recorder.create_snmp_record(oid=self.SYS_OBJECT_ID_OID, get_single_value=True)
                 if sys_obj_list:
                     sys_obj_id = sys_obj_list[0]
             except RequestTimedOut as e:
@@ -34,7 +36,7 @@ class SNMPOrchestrator(object):
                     self._template_oids_list.append(customer_oid_match.group())
                 else:
                     click.secho("Unable to detect target device manufacturer.")
-                    self._template_oids_list.append("1.3.6.1.4.1")
+                    self._template_oids_list.append(self.ROOT_VENDOR_OID)
 
             snmp_record_label = "Start SNMP recording for {}".format(self.snmp_parameters.ip)
             with click.progressbar(length=len(self._template_oids_list),
