@@ -31,7 +31,7 @@ class SNMPOrchestrator(object):
                 raise Exception("Failed to initialize snmp connection: \n{}".format(e))
 
             if self._auto_detect_vendor:
-                customer_oid_match = re.search(r"1.3.6.1.4.1.\d+", sys_obj_id or "")
+                customer_oid_match = re.search(r"{0}.\d+".format(self.ROOT_VENDOR_OID), sys_obj_id or "")
                 if customer_oid_match:
                     self._template_oids_list.append(customer_oid_match.group())
                 else:

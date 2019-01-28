@@ -61,12 +61,30 @@ class TestSnmpRecorder(TestCase):
         params.snmp_engine.transportDispatcher.runDispatcher.assert_called_once()
 
     @patch("cloudshell.recorder.snmp.snmp_recorder.udp6")
-    @patch("cloudshell.recorder.snmp.snmp_recorder.SnmpRecorder.send_bulk_var_binds")
+    @patch("cloudshell.recorder.snmp.snmp_recorder.SnmpRecorder.send_walk_var_binds")
+    @patch("cloudshell.recorder.snmp.snmp_recorder.error")
     @patch("cloudshell.recorder.snmp.snmp_recorder.log")
-    @patch("cloudshell.recorder.snmp.snmp_recorder.SnmpRecord")
-    def test_cb_fun(self, snmp_record, log_mock, send_bulk_var_binds_mock, udp6):
+    def test_create_recording_single_value(self, log_mock, error_mock, send_walk_var_binds_mock, udp6):
         # Setup
         params = MagicMock()
+        recorder = SnmpRecorder(params)
+        oid = "1.1.1.1.1"
+
+        # Act
+        result = recorder.create_snmp_record(oid, get_single_value=True)
+
+        # Assert
+        send_walk_var_binds_mock.assert_called_once()
+        params.snmp_engine.transportDispatcher.runDispatcher.assert_called_once()
+
+    @patch("cloudshell.recorder.snmp.snmp_recorder.udp6")
+    @patch("cloudshell.recorder.snmp.snmp_recorder.SnmpRecorder.send_walk_var_binds")
+    @patch("cloudshell.recorder.snmp.snmp_recorder.log")
+    @patch("cloudshell.recorder.snmp.snmp_recorder.SnmpRecord")
+    def test_cb_fun(self, snmp_record, log_mock, send_walk_var_binds_mock, udp6):
+        # Setup
+        params = MagicMock()
+        params.get_bulk_flag = False
         snmp_engine = MagicMock()
         send_request_handle = MagicMock()
         error_indication = None
@@ -76,7 +94,7 @@ class TestSnmpRecorder(TestCase):
                           (("2", MagicMock(return_value="9")), ("4", MagicMock(return_value="9")))]
         cb_ctx = MagicMock()
         recorder = SnmpRecorder(params)
-        recorder._get_bulk_repetitions = MagicMock()
+        recorder._get_bulk_flag = False
         snmp_record.return_value.format.side_effect = ["0", error.MoreDataNotification, "0", "0", "0"]
 
         # Act
@@ -85,10 +103,10 @@ class TestSnmpRecorder(TestCase):
                         error_status, error_index, var_bind_table, cb_ctx)
 
         # Assert
-        send_bulk_var_binds_mock.assert_called_with(
+        send_walk_var_binds_mock.assert_called_with(
             None,
             cb_ctx)
-        self.assertEqual(1, send_bulk_var_binds_mock.call_count)
+        self.assertEqual(1, send_walk_var_binds_mock.call_count)
 
     @patch("cloudshell.recorder.snmp.snmp_recorder.udp6")
     @patch("cloudshell.recorder.snmp.snmp_recorder.SnmpRecorder.send_bulk_var_binds")
@@ -106,7 +124,6 @@ class TestSnmpRecorder(TestCase):
         cb_ctx = MagicMock(return_value={"retries": "90"})
         recorder = SnmpRecorder(params)
         recorder._cmd_gen = MagicMock()
-        recorder._get_bulk_repetitions = 10
 
         # Act
         recorder.cb_fun(snmp_engine, send_request_handle, error_indication,
