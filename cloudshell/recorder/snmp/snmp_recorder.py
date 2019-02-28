@@ -65,7 +65,7 @@ class SnmpRecorder(object):
         try:
             self.snmp_parameters.snmp_engine.transportDispatcher.runDispatcher()
         except KeyboardInterrupt:
-            pass
+            raise
             # log.msg('Shutting down process...')
         except Exception:
             exc_info = sys.exc_info()

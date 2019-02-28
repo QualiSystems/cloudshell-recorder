@@ -39,20 +39,22 @@ class RecorderOrchestrator(object):
         create_snmp_record = False
         create_rest_record = False
 
-        if "all" in self._recording_type.lower():
+        recording_type = map(unicode.lower, self._recording_type.split(","))
+
+        if "all" in recording_type:
             create_cli_record = True
             if snmp_community or snmp_user:
                 create_snmp_record = True
             create_rest_record = True
 
-        if "cli" in self._recording_type.lower():
+        if "cli" in recording_type:
             create_cli_record = True
 
-        if "snmp" in self._recording_type.lower():
+        if "snmp" in recording_type:
             if snmp_community or snmp_user:
                 create_snmp_record = True
 
-        if "rest" in self._recording_type.lower():
+        if "rest" in recording_type:
             create_rest_record = True
 
         cli_recording = None

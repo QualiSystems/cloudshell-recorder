@@ -31,7 +31,7 @@ VSVersionInfo(
         u'040904b0',
         [StringStruct(u'CompanyName', u'Qualisystems'),
         StringStruct(u'ProductName', u'cloudshell-recorder'),
-        StringStruct(u'ProductVersion', u'1.0.0.0'),
+        StringStruct(u'ProductVersion', u'1.1.0.0'),
         StringStruct(u'InternalName', u'cloudshell-recorder'),
         StringStruct(u'OriginalFilename', u'cloudshell_recorder.exe'),
         StringStruct(u'FileVersion', u'96, 12, 19, 1'),

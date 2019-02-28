@@ -38,7 +38,8 @@ def version():
 @click.option(u'--snmp-priv-protocol', default="NONE",
               help="SNMP privacy encryption type: DES, 3DES, AES, AES128, AES192, AES192BLMT, AES256, AES256BLMT, "
                    "NONE. Default is NONE.")
-@click.option(u"--record-type", multiple=True, default="all", help="Defines what will be recorded. "
+@click.option(u"--record-type", default="all", help="Defines what will be recorded. "
+                                                    "Multiple values supported, i.e.: cli,snmp"
                                                     "Possible values: cli, rest, snmp, all. Default is all")
 @click.option(u'--snmp-auto-detect-vendor', is_flag=True, default=False,
               help="Enables auto detect of device manufacturer")
@@ -98,7 +99,8 @@ def new(ip,
             snmp_bulk_repetitions=snmp_bulk_repetitions,
             snmp_auto_detect_vendor=snmp_auto_detect_vendor)
     except Exception as e:
-        click.secho("\n {0}\nERROR: {1}\n{0}\n".format((7 + len(e.message)), e.message))
+        click.secho("\n {0}\nERROR: {1}\n{0}\n".format("*" * 80, e.message))
         with click.Context(new) as context:
             click.echo(new.get_help(context))
-            return
+            # return
+        raise e
