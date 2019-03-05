@@ -39,7 +39,7 @@ class RecorderOrchestrator(object):
         create_snmp_record = False
         create_rest_record = False
 
-        recording_type = map(unicode.lower, self._recording_type.split(","))
+        recording_type = map(lambda x: x.lower().strip(), self._recording_type.split(","))
 
         if "all" in recording_type:
             create_cli_record = True

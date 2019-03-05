@@ -12,7 +12,8 @@ class TestRecorderOrchestrator(TestCase):
     REC_SNMP = "snmp"
     REC_All = "all"
     REC_CLI = "cli"
-    REC_API = "api"
+    REC_API = "rest"
+    REC_API_AND_CLI = "rest, cli"
 
     def get_recorder(self, recording_type="snmp"):
         return RecorderOrchestrator(ip=self.IP, recording_type=recording_type, destination_path=self.DST_PATH)
@@ -81,18 +82,29 @@ class TestRecorderOrchestrator(TestCase):
                                          cli_session_type=connection_type)
 
     @patch("cloudshell.recorder.recorder_orchestrator.RecorderOrchestrator._new_rest_recording", return_value="")
-    def test_new_recording_basic_rest(self, rest_mock):
+    @patch("cloudshell.recorder.recorder_orchestrator.RecorderOrchestrator._new_cli_recording", return_value="")
+    def test_new_recording_basic_rest(self, cli_mock, rest_mock):
         # Setup
-        recorder = self.get_recorder(self.REC_All)
+        recorder = self.get_recorder(self.REC_API_AND_CLI)
         user = "user"
         password = "password"
+        en_password = "enable password"
+        connection_type = "ssh"
 
         # Act
-        recorder.new_recording(rest_user=user, rest_password=password)
+        recorder.new_recording(rest_user=user,
+                               rest_password=password,
+                               cli_user=user,
+                               cli_password=password,
+                               cli_enable_password=en_password,
+                               cli_session_type=connection_type)
 
         # Assert
         rest_mock.assert_called_once_with(rest_user=user, rest_password=password,
                                           rest_token=None)
+        cli_mock.assert_called_once_with(cli_user=user, cli_password=password,
+                                         cli_enable_password=en_password,
+                                         cli_session_type=connection_type)
 
     @patch("cloudshell.recorder.recorder_orchestrator.SNMPOrchestrator")
     @patch("cloudshell.recorder.recorder_orchestrator.SnmpV2Parameters")
