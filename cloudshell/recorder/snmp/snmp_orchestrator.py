@@ -27,7 +27,7 @@ class SNMPOrchestrator(object):
                 if sys_obj_list:
                     sys_obj_id = sys_obj_list[0]
             except RequestTimedOut as e:
-                # add logger here
+                # ToDo add logger here
                 raise Exception("Failed to initialize snmp connection: \n{}".format(e))
 
             if self._auto_detect_vendor:
@@ -57,6 +57,8 @@ class SNMPOrchestrator(object):
                             continue
                     try:
                         recorded_data.extend(snmp_recorder.create_snmp_record(oid=oid_line))
+                    except KeyboardInterrupt:
+                        raise
                     except:
                         pass
                     pbar.next()
