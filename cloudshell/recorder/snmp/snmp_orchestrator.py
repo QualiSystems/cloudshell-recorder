@@ -58,7 +58,8 @@ class SNMPOrchestrator(object):
                     try:
                         recorded_data.extend(snmp_recorder.create_snmp_record(oid=oid_line))
                     except KeyboardInterrupt:
-                        raise
+                        click.secho("Snmp recording process interrupted by user. Stopping now.")
+                        return recorded_data
                     except:
                         pass
                     pbar.next()
