@@ -1,0 +1,246 @@
+? !!python/object:cloudshell.recorder.rest.model.RestRequest
+  data: null
+  headers: null
+  method: get
+  uri: /ports
+: !!python/object:cloudshell.recorder.rest.model.RestResponse
+  content: "[\n        {\n                \"id\": 2,\n                \"name\": \"\
+    P49\"\n        },\n        {\n                \"id\": 3,\n                \"name\"\
+    : \"P50\"\n        },\n        {\n                \"id\": 4,\n               \
+    \ \"name\": \"P51\"\n        },\n        {\n                \"id\": 5,\n     \
+    \           \"name\": \"P52\"\n        },\n        {\n                \"id\":\
+    \ 6,\n                \"name\": \"P53\"\n        },\n        {\n             \
+    \   \"id\": 7,\n                \"name\": \"P54\"\n        },\n        {\n   \
+    \             \"id\": 9,\n                \"name\": \"P01\"\n        },\n    \
+    \    {\n                \"id\": 10,\n                \"name\": \"P02\"\n     \
+    \   },\n        {\n                \"id\": 11,\n                \"name\": \"P03\"\
+    \n        },\n        {\n                \"id\": 12,\n                \"name\"\
+    : \"P04\"\n        },\n        {\n                \"id\": 13,\n              \
+    \  \"name\": \"P05\"\n        },\n        {\n                \"id\": 14,\n   \
+    \             \"name\": \"P06\"\n        },\n        {\n                \"id\"\
+    : 15,\n                \"name\": \"P07\"\n        },\n        {\n            \
+    \    \"id\": 16,\n                \"name\": \"P08\"\n        },\n        {\n \
+    \               \"id\": 17,\n                \"name\": \"P09\"\n        },\n \
+    \       {\n                \"id\": 18,\n                \"name\": \"P10\"\n  \
+    \      },\n        {\n                \"id\": 19,\n                \"name\": \"\
+    P11\"\n        },\n        {\n                \"id\": 20,\n                \"\
+    name\": \"P12\"\n        },\n        {\n                \"id\": 21,\n        \
+    \        \"name\": \"P13\"\n        },\n        {\n                \"id\": 22,\n\
+    \                \"name\": \"P14\"\n        },\n        {\n                \"\
+    id\": 23,\n                \"name\": \"P15\"\n        },\n        {\n        \
+    \        \"id\": 24,\n                \"name\": \"P16\"\n        },\n        {\n\
+    \                \"id\": 25,\n                \"name\": \"P17\"\n        },\n\
+    \        {\n                \"id\": 26,\n                \"name\": \"P18\"\n \
+    \       },\n        {\n                \"id\": 27,\n                \"name\":\
+    \ \"P19\"\n        },\n        {\n                \"id\": 28,\n              \
+    \  \"name\": \"P20\"\n        },\n        {\n                \"id\": 29,\n   \
+    \             \"name\": \"P21\"\n        },\n        {\n                \"id\"\
+    : 30,\n                \"name\": \"P22\"\n        },\n        {\n            \
+    \    \"id\": 31,\n                \"name\": \"P23\"\n        },\n        {\n \
+    \               \"id\": 32,\n                \"name\": \"P24\"\n        },\n \
+    \       {\n                \"id\": 33,\n                \"name\": \"P25\"\n  \
+    \      },\n        {\n                \"id\": 34,\n                \"name\": \"\
+    P26\"\n        },\n        {\n                \"id\": 35,\n                \"\
+    name\": \"P27\"\n        },\n        {\n                \"id\": 36,\n        \
+    \        \"name\": \"P28\"\n        },\n        {\n                \"id\": 37,\n\
+    \                \"name\": \"P29\"\n        },\n        {\n                \"\
+    id\": 38,\n                \"name\": \"P30\"\n        },\n        {\n        \
+    \        \"id\": 39,\n                \"name\": \"P31\"\n        },\n        {\n\
+    \                \"id\": 40,\n                \"name\": \"P32\"\n        },\n\
+    \        {\n                \"id\": 41,\n                \"name\": \"P33\"\n \
+    \       },\n        {\n                \"id\": 42,\n                \"name\":\
+    \ \"P34\"\n        },\n        {\n                \"id\": 43,\n              \
+    \  \"name\": \"P35\"\n        },\n        {\n                \"id\": 44,\n   \
+    \             \"name\": \"P36\"\n        },\n        {\n                \"id\"\
+    : 45,\n                \"name\": \"P37\"\n        },\n        {\n            \
+    \    \"id\": 46,\n                \"name\": \"P38\"\n        },\n        {\n \
+    \               \"id\": 47,\n                \"name\": \"P39\"\n        },\n \
+    \       {\n                \"id\": 48,\n                \"name\": \"P40\"\n  \
+    \      },\n        {\n                \"id\": 49,\n                \"name\": \"\
+    P41\"\n        },\n        {\n                \"id\": 50,\n                \"\
+    name\": \"P42\"\n        },\n        {\n                \"id\": 51,\n        \
+    \        \"name\": \"P43\"\n        },\n        {\n                \"id\": 52,\n\
+    \                \"name\": \"P44\"\n        },\n        {\n                \"\
+    id\": 53,\n                \"name\": \"P45\"\n        },\n        {\n        \
+    \        \"id\": 54,\n                \"name\": \"P46\"\n        },\n        {\n\
+    \                \"id\": 55,\n                \"name\": \"P47\"\n        },\n\
+    \        {\n                \"id\": 56,\n                \"name\": \"P48\"\n \
+    \       }\n]"
+  headers:
+    Accept-Ranges: bytes
+    Cache-Control: s-maxage=100, must-revalidate, no-cache, no-store, no-transform,
+      private
+    Content-Length: '4153'
+    Content-Security-Policy: 'default-src ''self'' ''unsafe-eval'' ''unsafe-inline'';
+      frame-ancestors ''self''; img-src http: https: data:'
+    Content-Type: application/json;charset=utf-8
+    Date: Sun, 21 Jul 2019 23:41:14 GMT
+    Pragma: no-cache
+    Public-Key-Pins: pin-sha256="91eaiBlpaQ2uZ95MhUIbgk5bNM5sh+hDN9mNa/2+704="; max-age=5184000;
+      includeSubDomains
+    Server: Restlet-Framework/Apache-RESTv5.7.3
+    Strict-Transport-Security: max-age=31536000; includeSubDomains
+    X-Auth-Token: Token NGVjZjdhNmJhYWI5MzRkZTFlOGUxNmRlZjlmYTAyMTUxYWJhMGNjYTBkYzc5Yzg1NzdjZjE5Yjc4OWE0YjdiNw==
+    X-Content-Type-Options: nosniff
+    X-Frame-Options: SAMEORIGIN
+    X-XSS-Protection: 1; mode=block
+  status_code: 200
+? !!python/object:cloudshell.recorder.rest.model.RestRequest
+  data: null
+  headers: null
+  method: GET
+  uri: /ports/20
+: !!python/object:cloudshell.recorder.rest.model.RestResponse
+  content: "{\n        \"afm_pipeline_direction\": \"INGRESS\",\n        \"burst_buffer_settings\"\
+    : null,\n        \"connect_in_access_settings\": {\n                \"groups\"\
+    : [],\n                \"policy\": \"ALLOW_ALL\"\n        },\n        \"connect_out_access_settings\"\
+    : {\n                \"groups\": [],\n                \"policy\": \"ALLOW_ALL\"\
+    \n        },\n        \"custom_icon_id\": null,\n        \"data_masking_settings\"\
+    : null,\n        \"dedup_settings\": null,\n        \"default_name\": \"P12\"\
+    ,\n        \"description\": null,\n        \"dest_filter_list\": [],\n       \
+    \ \"direct_attach_copper\": false,\n        \"enabled\": false,\n        \"erspan_strip_settings\"\
+    : null,\n        \"etag_strip_settings\": null,\n        \"expiration_time\":\
+    \ 1580601599000,\n        \"fabric_path_strip_settings\": null,\n        \"filter_criteria\"\
+    : {\"logical_operation\": \"AND\"},\n        \"filter_match_count_unit\": \"PACKETS\"\
+    ,\n        \"filter_mode\": \"PASS_ALL\",\n        \"filtering_direction\": \"\
+    INGRESS\",\n        \"filtering_options\": {\"optimize_connected_df_rules\": true},\n\
+    \        \"force_link_up\": \"DISABLED\",\n        \"forward_error_correction\"\
+    : false,\n        \"generic_strip_settings\": null,\n        \"gtp_fd_settings\"\
+    : null,\n        \"gtp_strip_settings\": null,\n        \"has_dropped_packets\"\
+    : false,\n        \"history\": [],\n        \"icon_type\": \"SFP_PLUS\",\n   \
+    \     \"id\": 20,\n        \"ignore_pause_frames\": true,\n        \"inline_bypass_connector_id\"\
+    : null,\n        \"inline_tool_connector_id\": null,\n        \"is_shared\": false,\n\
+    \        \"keywords\": [],\n        \"l2gre_strip_settings\": null,\n        \"\
+    last_filter_order_event\": null,\n        \"license_status\": \"VALID\",\n   \
+    \     \"link_settings\": \"10G_FULL\",\n        \"link_status\": {\n         \
+    \       \"duplex\": \"UNKNOWN\",\n                \"link_up\": false,\n      \
+    \          \"pause\": \"UNKNOWN\",\n                \"speed\": \"N/A\"\n     \
+    \   },\n        \"link_up_down_trap_enabled\": true,\n        \"lisp_strip_settings\"\
+    : null,\n        \"lldp_receive_enabled\": false,\n        \"lldp_transmit_enabled\"\
+    : false,\n        \"max_licensed_speed\": \"10G\",\n        \"media_type\": \"\
+    SFP_PLUS_10G\",\n        \"misc\": {\n                \"access_map\": {\n    \
+    \                    \"CONNECT_OUT_ACCESS_SETTINGS\": {\n                    \
+    \            \"access_settings\": {\n                                        \"\
+    groups\": [],\n                                        \"policy\": \"ALLOW_ALL\"\
+    \n                                },\n                                \"affecting_ports\"\
+    : {},\n                                \"current_value\": \"All users.\",\n  \
+    \                              \"expression_text\": \"All users.\",\n        \
+    \                        \"operation_name\": \"Connect Target Dynamic Filters\"\
+    ,\n                                \"operation_phrase\": \"connect target dynamic\
+    \ filters to\",\n                                \"user_names\": \"\",\n     \
+    \                           \"users_statement\": \"Anyone can perform\"\n    \
+    \                    },\n                        \"MODIFY_ACCESS_SETTINGS\": {\n\
+    \                                \"access_settings\": {\n                    \
+    \                    \"groups\": [],\n                                       \
+    \ \"policy\": \"ALLOW_ALL\"\n                                },\n            \
+    \                    \"affecting_ports\": {},\n                              \
+    \  \"current_value\": \"All users.\",\n                                \"expression_text\"\
+    : \"All users.\",\n                                \"operation_name\": \"Modify\"\
+    ,\n                                \"operation_phrase\": \"modify\",\n       \
+    \                         \"user_names\": \"\",\n                            \
+    \    \"users_statement\": \"Anyone can perform\"\n                        },\n\
+    \                        \"VIEW_ACCESS_SETTINGS\": {\n                       \
+    \         \"access_settings\": {\n                                        \"groups\"\
+    : [],\n                                        \"policy\": \"ALLOW_ALL\"\n   \
+    \                             },\n                                \"affecting_ports\"\
+    : {},\n                                \"current_value\": \"All users.\",\n  \
+    \                              \"expression_text\": \"All users.\",\n        \
+    \                        \"operation_name\": \"View\",\n                     \
+    \           \"operation_phrase\": \"view\",\n                                \"\
+    user_names\": \"\",\n                                \"users_statement\": \"Anyone\
+    \ can perform\"\n                        }\n                },\n             \
+    \   \"access_props\": [\n                        \"VIEW_ACCESS_SETTINGS\",\n \
+    \                       \"MODIFY_ACCESS_SETTINGS\",\n                        \"\
+    CONNECT_OUT_ACCESS_SETTINGS\"\n                ],\n                \"board_type\"\
+    : \"EPIPHONE_40_MAIN\",\n                \"is_ready\": true\n        },\n    \
+    \    \"mod_count\": 25,\n        \"mode\": \"NETWORK\",\n        \"modify_access_settings\"\
+    : {\n                \"groups\": [],\n                \"policy\": \"ALLOW_ALL\"\
+    \n        },\n        \"mpls_strip_settings\": null,\n        \"name\": \"P12\"\
+    ,\n        \"packet_length_trailer_settings\": null,\n        \"port_group_id\"\
+    : null,\n        \"remote_fabric_port\": null,\n        \"snmp_tag\": null,\n\
+    \        \"source_filter_list\": [],\n        \"std_port_tagging_settings\": {\n\
+    \                \"enabled\": false,\n                \"vlan_id\": 112\n     \
+    \   },\n        \"std_strip_by_vlan_settings\": {\n                \"enabled\"\
+    : false,\n                \"strip_mode\": \"EGRESS\",\n                \"vlan_id\"\
+    : 1\n        },\n        \"std_vlan_strip_settings\": {\n                \"egress_count\"\
+    : 0,\n                \"enabled\": false,\n                \"ingress_count\":\
+    \ 0,\n                \"strip_mode\": \"INGRESS\"\n        },\n        \"supported_feature_info\"\
+    : {\n                \"afm_module_based\": \"NOT_SUPPORTED\",\n              \
+    \  \"afm_netport\": \"NOT_SUPPORTED\",\n                \"afm_resource_based\"\
+    : \"NOT_SUPPORTED\",\n                \"burst_buffer\": \"NOT_SUPPORTED\",\n \
+    \               \"data_masking\": \"NOT_SUPPORTED\",\n                \"dedup\"\
+    : \"NOT_SUPPORTED\",\n                \"erspan_strip\": \"NOT_SUPPORTED\",\n \
+    \               \"etag_strip\": \"NOT_SUPPORTED\",\n                \"fabric_path_strip\"\
+    : \"NOT_SUPPORTED\",\n                \"generic_strip\": \"NOT_SUPPORTED\",\n\
+    \                \"gtp_flow_distribution\": \"NOT_SUPPORTED\",\n             \
+    \   \"gtp_strip\": \"NOT_SUPPORTED\",\n                \"l2gre_strip\": \"NOT_SUPPORTED\"\
+    ,\n                \"lisp_strip\": \"NOT_SUPPORTED\",\n                \"mpls_strip\"\
+    : \"NOT_SUPPORTED\",\n                \"packet_fragmentation\": \"NOT_SUPPORTED\"\
+    ,\n                \"packet_length_trailer\": \"NOT_SUPPORTED\",\n           \
+    \     \"port_force_link_up\": \"HARDWARE_LICENSE\",\n                \"port_mode_bidirectional\"\
+    : \"HARDWARE_LICENSE\",\n                \"port_mode_loopback\": \"HARDWARE_LICENSE\"\
+    ,\n                \"port_mode_simplex\": \"HARDWARE_LICENSE\",\n            \
+    \    \"port_mode_tool\": \"HARDWARE_LICENSE\",\n                \"port_priority_filtering\"\
+    : \"HARDWARE_LICENSE\",\n                \"port_tx_light_status\": \"HARDWARE_LICENSE\"\
+    ,\n                \"pppoe_strip\": \"NOT_SUPPORTED\",\n                \"std_port_tagging\"\
+    : \"HARDWARE_LICENSE\",\n                \"std_strip_by_vlan\": \"HARDWARE_LICENSE\"\
+    ,\n                \"std_vlan_strip\": \"HARDWARE_LICENSE\",\n               \
+    \ \"timestamp\": \"NOT_SUPPORTED\",\n                \"trailer_strip\": \"NOT_SUPPORTED\"\
+    ,\n                \"trim\": \"NOT_SUPPORTED\",\n                \"tunneling\"\
+    : \"NOT_SUPPORTED\",\n                \"vntag_strip\": \"NOT_SUPPORTED\",\n  \
+    \              \"vxlan_strip\": \"NOT_SUPPORTED\"\n        },\n        \"supports_packet_length_trailer\"\
+    : null,\n        \"timestamp_settings\": null,\n        \"trailer_strip_settings\"\
+    : null,\n        \"trim_settings\": null,\n        \"tunnel_mac\": null,\n   \
+    \     \"tunnel_termination_settings\": {\n                \"dest_ip_addr\": null,\n\
+    \                \"empty_erspan_header\": false,\n                \"enabled\"\
+    : false,\n                \"ip_version\": 4,\n                \"tunnel_protocol\"\
+    : null\n        },\n        \"tx_light_status\": \"ON\",\n        \"type\": \"\
+    SFP_PLUS\",\n        \"uuid\": \"9280d004-372f-480c-9c66-9e161b1acd5a\",\n   \
+    \     \"view_access_settings\": {\n                \"groups\": [],\n         \
+    \       \"policy\": \"ALLOW_ALL\"\n        },\n        \"vntag_strip_settings\"\
+    : null,\n        \"vxlan_strip_settings\": null\n}"
+  headers:
+    Accept-Ranges: bytes
+    Cache-Control: s-maxage=100, must-revalidate, no-cache, no-store, no-transform,
+      private
+    Content-Length: '7983'
+    Content-Security-Policy: 'default-src ''self'' ''unsafe-eval'' ''unsafe-inline'';
+      frame-ancestors ''self''; img-src http: https: data:'
+    Content-Type: application/json;charset=utf-8
+    Date: Sun, 21 Jul 2019 23:41:14 GMT
+    Pragma: no-cache
+    Public-Key-Pins: pin-sha256="91eaiBlpaQ2uZ95MhUIbgk5bNM5sh+hDN9mNa/2+704="; max-age=5184000;
+      includeSubDomains
+    Server: Restlet-Framework/Apache-RESTv5.7.3
+    Strict-Transport-Security: max-age=31536000; includeSubDomains
+    X-Auth-Token: Token NTgyNThjZWI0MTFkM2QwODYwMDE4N2FjMDRkZTY3ZmNmYjE5MzQ0ZTllNDM0NTk5ZWJmYWIwM2E0ZmE3ZmVlYw==
+    X-Content-Type-Options: nosniff
+    X-Frame-Options: SAMEORIGIN
+    X-XSS-Protection: 1; mode=block
+  status_code: 200
+? !!python/object:cloudshell.recorder.rest.model.RestRequest
+  data: null
+  headers: null
+  method: GET
+  uri: /cte_ports/
+: !!python/object:cloudshell.recorder.rest.model.RestResponse
+  content: '[]'
+  headers:
+    Accept-Ranges: bytes
+    Cache-Control: s-maxage=100, must-revalidate, no-cache, no-store, no-transform,
+      private
+    Content-Length: '2'
+    Content-Security-Policy: 'default-src ''self'' ''unsafe-eval'' ''unsafe-inline'';
+      frame-ancestors ''self''; img-src http: https: data:'
+    Content-Type: application/json;charset=utf-8
+    Date: Sun, 21 Jul 2019 23:41:15 GMT
+    Pragma: no-cache
+    Public-Key-Pins: pin-sha256="91eaiBlpaQ2uZ95MhUIbgk5bNM5sh+hDN9mNa/2+704="; max-age=5184000;
+      includeSubDomains
+    Server: Restlet-Framework/Apache-RESTv5.7.3
+    Strict-Transport-Security: max-age=31536000; includeSubDomains
+    X-Auth-Token: Token MjYyZjQzMzEwYzJjZTU4NTY0Mjg2NTYzMDZkZWQxMjdhMTYzM2ViYWY3MzM5OWNhYmEzNmJlZTVjNjg0YmFlZA==
+    X-Content-Type-Options: nosniff
+    X-Frame-Options: SAMEORIGIN
+    X-XSS-Protection: 1; mode=block
+  status_code: 200

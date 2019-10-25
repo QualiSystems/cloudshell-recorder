@@ -1,0 +1,17 @@
+Session:
+  username: admin
+  password: admin
+  token:
+  headers:
+    Accept: '*/*'
+    Authorization: MachineName=;Token=
+    ClientTimeZoneId: UTC
+    Content-Type: text/xml
+    DateTimeFormat: MM/dd/yyyy HH:mm
+Requests:
+- data: <Logon><username>admin</username><password>admin</password><domainName>Global</domainName></Logon>
+  method: post
+  uri: /ResourceManagerApiService/Logon
+- data: <GetServerDateAndTime />
+  method: post
+  uri: /ResourceManagerApiService/GetServerDateAndTime

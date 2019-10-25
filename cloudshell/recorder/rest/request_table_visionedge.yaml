@@ -1,0 +1,7 @@
+Session:
+  username: admin
+  password: admin
+Requests:
+- uri: /api/ports
+- uri: /api/cte_ports
+- uri: /api/cte_filters
