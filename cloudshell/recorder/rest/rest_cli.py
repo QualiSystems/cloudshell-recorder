@@ -2,9 +2,13 @@ import logging
 import os
 import ssl
 import sys
-import urllib
+# import urllib
 from http.server import HTTPServer
-from urllib.parse import urlparse
+
+try:
+    from urllib.parse import urlparse
+except ImportError:
+    from urlparse import urlparse
 
 import click
 import pkg_resources
@@ -17,11 +21,6 @@ urllib3.disable_warnings()
 
 CASSETTE_NAME_TEMPLATE = "{scheme}_{host}_{port}.yaml"
 MATCH_ON = ('method', 'path', 'query')
-
-
-def _enable_debug():
-    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG,
-                        format="%(asctime)s [%(levelname)s]: %(name)s %(module)s - %(funcName)-20s %(message)s")
 
 
 @click.group(invoke_without_command=True)
@@ -46,9 +45,8 @@ def rest_cli(ctx, version):
 @click.option("--scheme", "-s", default=None, help="Listen scheme, http or https, Default: dst url scheme.")
 @click.option("--file-path", "-f", default=None, help="Record path. Default: current path.")
 @click.option("--debug", "-d", is_flag=True, default=False, help="Enable debug.")
-@click.option("--record", "-r", "record_mode", is_flag=True, default=False, help="Enable record mode.")
 @click.argument(u'url', type=str, default=None, required=True)
-def record(host, port, scheme, file_path, debug, record_mode, url):
+def record(host, port, scheme, file_path, debug, url):
     if debug:
         _enable_debug()
 
@@ -56,15 +54,12 @@ def record(host, port, scheme, file_path, debug, record_mode, url):
     RestSimHTTPRequestHandler.RECORD_PATH = file_path
     RestSimHTTPRequestHandler.RECORD_MODE = False
 
-    if record_mode:
-        vcr_cass_man = vcr.use_cassette(_cassette_path(url, file_path), record_mode='new_episodes',
-                                        match_on=MATCH_ON)
-    else:
-        vcr_cass_man = vcr.use_cassette(_cassette_path(url, file_path), match_on=MATCH_ON)
+    vcr_cass_man = vcr.use_cassette(_cassette_path(url, file_path), record_mode='new_episodes',
+                                    match_on=MATCH_ON)
 
     RestSimHTTPRequestHandler.VCR_CONT_MANAGER = vcr_cass_man
 
-    url_obj = urllib.parse.urlparse(url)
+    url_obj = urlparse(url)
     if not port and not url_obj.port:
         if scheme == "http" or url_obj.scheme == "http":
             port = 80
@@ -79,8 +74,49 @@ def record(host, port, scheme, file_path, debug, record_mode, url):
     server.serve_forever()
 
 
+@rest_cli.command()
+@click.option("--host", "-h", default="localhost",
+              help="Listen host. Default: localhost")
+@click.option("--port", "-p", default=None,
+              help="Listen port. Default: dst url port")
+@click.option("--scheme", "-s", default=None, help="Listen scheme, http or https, Default: dst url scheme.")
+@click.option("--file-path", "-f", default=None, help="Record path. Default: current path.")
+@click.option("--debug", "-d", is_flag=True, default=False, help="Enable debug.")
+@click.argument(u'url', type=str, default=None, required=False)
+def simulate(host, port, scheme, file_path, debug, url):
+    if debug:
+        _enable_debug()
+
+    RestSimHTTPRequestHandler.URL = url
+    RestSimHTTPRequestHandler.RECORD_PATH = file_path
+    RestSimHTTPRequestHandler.RECORD_MODE = False
+
+    vcr_cass_man = vcr.use_cassette(_cassette_path(url, file_path), match_on=MATCH_ON)
+
+    RestSimHTTPRequestHandler.VCR_CONT_MANAGER = vcr_cass_man
+
+    url_obj = urlparse(url)
+    if not port and not url_obj.port:
+        if scheme == "http" or url_obj.scheme == "http":
+            port = 80
+        else:
+            port = 443
+    else:
+        port = port or url_obj.port
+    server = HTTPServer((host, port), RestSimHTTPRequestHandler)
+    if (scheme and scheme == "https") or url_obj.scheme == "https":
+        server.socket = ssl.wrap_socket(server.socket, server_side=True,
+                                        certfile=os.path.join(os.path.dirname(__file__), 'default.pem'))
+    server.serve_forever()
+
+
+def _enable_debug():
+    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG,
+                        format="%(asctime)s [%(levelname)s]: %(name)s %(module)s - %(funcName)-20s %(message)s")
+
+
 def _cassette_name(url):
-    url_obj = urllib.parse.urlparse(url)
+    url_obj = urlparse(url)
     if not url_obj.port and url_obj.scheme.lower() == 'http':
         port = '80'
     elif not url_obj.port:
@@ -91,17 +127,24 @@ def _cassette_name(url):
 
 
 def _cassette_path(url, path):
-    if path and os.path.isfile(path):
-        return path
-    elif path and os.path.isdir(path):
+    if path and os.path.isdir(path):
         return os.path.join(path, _cassette_name(url))
+    elif path:
+        return path
     else:
         return _cassette_name(url)
 
 
-@rest_cli.command()
-def simulate():
-    pass
+def _choose_port(url, port, scheme):
+    url_obj = urlparse(url)
+    if not port and not url_obj.port:
+        if scheme == "http" or url_obj.scheme == "http":
+            port = 80
+        else:
+            port = 443
+    else:
+        port = port or url_obj.port
+    return port
 
 
 if __name__ == '__main__':

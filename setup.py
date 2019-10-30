@@ -17,7 +17,8 @@ setup(
     author_email='info@qualisystems.com',
     packages=find_packages(),
     entry_points={
-        "console_scripts": ['cloudshell_recorder = cloudshell.recorder.bootstrap:cli']
+        "console_scripts": ['cloudshell_recorder = cloudshell.recorder.bootstrap:cli',
+                            'rest_simulator = cloudshell.recorder.rest.rest_cli:rest_cli']
     },
     install_requires=required,
     test_suite='tests',
